@@ -1,6 +1,6 @@
 {
   "status": "Evaluated",
-  "eval_timestamp": "2026-11-01T06:59:32Z",
+  "eval_timestamp": "2026-11-01T09:08:24Z",
   "total_documents": 20,
   "total_chunks": 104,
   "eval_queries_count": 100,
@@ -10,7 +10,7 @@
   "precision_at_k": 0.6375,
   "recall_at_k": 2.0867,
   "mrr": 0.8192,
-  "avg_latency_ms": 6.42,
+  "avg_latency_ms": 260.86,
   "query_evaluations": [
     {
       "question": "What are the three primary energy-yielding macronutrients and what are their respective caloric densities?",
@@ -26,7 +26,7 @@
       "precision_at_k": 0.5,
       "recall_at_k": 2.0,
       "reciprocal_rank": 1.0,
-      "latency_ms": 38.72
+      "latency_ms": 387.36
     },
     {
       "question": "How do regional carbohydrate sources differ between North India and South India?",
@@ -43,13 +43,13 @@
       "precision_at_k": 0.75,
       "recall_at_k": 1.5,
       "reciprocal_rank": 1.0,
-      "latency_ms": 7.51
+      "latency_ms": 198.05
     },
     {
       "question": "Why is dietary fat necessary for human physiology despite its high caloric density?",
       "expected_ids": [
-        "macronutrients_001",
-        "fats_001"
+        "fats_001",
+        "macronutrients_001"
       ],
       "retrieved_ids": [
         "macronutrients_001",
@@ -60,7 +60,7 @@
       "precision_at_k": 1.0,
       "recall_at_k": 2.0,
       "reciprocal_rank": 1.0,
-      "latency_ms": 11.11
+      "latency_ms": 414.83
     },
     {
       "question": "What is the acceptable macronutrient distribution range (AMDR) for healthy adults?",
@@ -76,13 +76,13 @@
       "precision_at_k": 0.5,
       "recall_at_k": 2.0,
       "reciprocal_rank": 1.0,
-      "latency_ms": 6.55
+      "latency_ms": 243.11
     },
     {
       "question": "Can I calculate the exact calories of a cooked meal just from knowing the ingredients were dal and rice?",
       "expected_ids": [
-        "macronutrients_001",
-        "nutrition_uncertainty_and_limitations_001"
+        "nutrition_uncertainty_and_limitations_001",
+        "macronutrients_001"
       ],
       "retrieved_ids": [
         "indian_lunch_and_dinner_001",
@@ -93,7 +93,7 @@
       "precision_at_k": 0.25,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.333,
-      "latency_ms": 6.49
+      "latency_ms": 186.67
     },
     {
       "question": "What is the biological importance of dietary protein and essential amino acids?",
@@ -109,14 +109,14 @@
       "precision_at_k": 1.0,
       "recall_at_k": 4.0,
       "reciprocal_rank": 1.0,
-      "latency_ms": 5.47
+      "latency_ms": 199.11
     },
     {
       "question": "What is protein complementarity and how does the combination of dal and rice achieve it?",
       "expected_ids": [
+        "vegetarian_nutrition_001",
         "protein_001",
-        "pulses_and_legumes_001",
-        "vegetarian_nutrition_001"
+        "pulses_and_legumes_001"
       ],
       "retrieved_ids": [
         "protein_001",
@@ -127,13 +127,13 @@
       "precision_at_k": 1.0,
       "recall_at_k": 1.333,
       "reciprocal_rank": 1.0,
-      "latency_ms": 5.31
+      "latency_ms": 289.87
     },
     {
       "question": "Which vegetarian Indian foods provide significant amounts of protein?",
       "expected_ids": [
-        "protein_001",
-        "vegetarian_nutrition_001"
+        "vegetarian_nutrition_001",
+        "protein_001"
       ],
       "retrieved_ids": [
         "vegetarian_nutrition_001",
@@ -144,13 +144,13 @@
       "precision_at_k": 1.0,
       "recall_at_k": 2.0,
       "reciprocal_rank": 1.0,
-      "latency_ms": 4.94
+      "latency_ms": 311.44
     },
     {
       "question": "Does eating paneer provide pure protein without any other macronutrients?",
       "expected_ids": [
-        "protein_001",
-        "dairy_and_alternatives_001"
+        "dairy_and_alternatives_001",
+        "protein_001"
       ],
       "retrieved_ids": [
         "protein_001",
@@ -161,7 +161,7 @@
       "precision_at_k": 1.0,
       "recall_at_k": 2.0,
       "reciprocal_rank": 1.0,
-      "latency_ms": 5.42
+      "latency_ms": 198.0
     },
     {
       "question": "How does soaking and sprouting legumes affect their protein digestibility?",
@@ -178,7 +178,7 @@
       "precision_at_k": 1.0,
       "recall_at_k": 2.0,
       "reciprocal_rank": 1.0,
-      "latency_ms": 5.83
+      "latency_ms": 314.03
     }
   ]
 }

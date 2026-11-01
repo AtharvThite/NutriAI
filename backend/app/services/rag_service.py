@@ -30,6 +30,98 @@ FALLBACK_TEXT = (
     "verify specific food intake against measured gram weights in the Nutrition Checker."
 )
 
+FALLBACK_UNRELATED_ANSWER = (
+    "I am **NutriAI**, your dedicated clinical nutrition and Indian food assistant.\n\n"
+    "I specialize exclusively in **human nutrition, dietary science, metabolic health, and Indian food composition**. "
+    "I cannot answer questions outside of nutrition and dietetics (such as general trivia, sports, politics, or coding).\n\n"
+    "### What you can ask me about:\n"
+    "• **Indian Food Composition**: Nutrient breakdowns for over 1,014 Anuvaad lab-analyzed foods (e.g. *dal tadka, rotis, paneer, idli*).\n"
+    "• **Macronutrients & Micronutrients**: Caloric densities, protein quality, essential amino acids, dietary fiber, iron, and vitamins.\n"
+    "• **Clinical Dietary Guidance**: Evidence-based strategies for Type-2 diabetes, hypertension, dyslipidemia, and renal health.\n"
+    "• **Culinary Nutrition Science**: How fermentation, germination, and traditional cooking methods impact nutrient bioavailability."
+)
+
+NUTRITION_KEYWORDS = {
+    # Nutrients & energy
+    "calorie", "calories", "kcal", "energy", "joule", "atwater",
+    "protein", "proteins", "amino", "amino acid", "amino acids", "peptides",
+    "carb", "carbs", "carbohydrate", "carbohydrates", "starch", "sugar", "sugars", "glucose", "fructose", "sucrose",
+    "fat", "fats", "lipid", "lipids", "oil", "oils", "ghee", "fatty acid", "fatty acids", "sfa", "mufa", "pufa",
+    "fiber", "fibre", "roughage", "cellulose", "pectin",
+    "vitamin", "vitamins", "mineral", "minerals", "iron", "calcium", "zinc", "iodine", "potassium", "sodium", "magnesium", "folate", "b12",
+    "macro", "macros", "macronutrient", "macronutrients", "micronutrient", "micronutrients",
+    "electrolyte", "electrolytes", "water", "hydration", "fluid",
+    # Diet & health
+    "diet", "diets", "dietary", "dieting", "nutrition", "nutritional", "nutrient", "nutrients", "rda", "intake",
+    "balanced diet", "portion", "portions", "deficit", "surplus", "weight loss", "weight gain", "obesity", "bmi", "lean mass",
+    "fasting", "intermittent fasting", "metabolism", "metabolic", "digestion", "digestive", "satiety", "appetite", "absorption",
+    "glycemic", "glycaemic", "gi", "gl", "glycemic index", "glycemic load", "insulin", "diabetes", "diabetic",
+    "hypertension", "blood pressure", "bp", "dash", "cholesterol", "ldl", "hdl", "triglycerides", "cardiovascular", "heart",
+    "kidney", "renal", "uric acid", "gout", "anemia", "anaemia", "thyroid", "pcos", "pcod", "fatty liver",
+    "gut", "gut health", "microbiome", "acid reflux", "gerd", "bloating", "constipation", "celiac", "gluten", "lactose", "allergy",
+    "vegan", "vegetarian", "non-vegetarian", "jain", "keto", "ketogenic",
+    # Food & cooking
+    "food", "foods", "meal", "meals", "dish", "dishes", "ingredient", "ingredients", "recipe", "recipes",
+    "eat", "eating", "ate", "breakfast", "lunch", "dinner", "snack", "snacks", "thali",
+    "cook", "cooking", "cooked", "boil", "boiling", "steam", "steaming", "fry", "frying", "fried", "roast", "roasting",
+    "ferment", "fermentation", "fermented", "sprout", "sprouts", "sprouting", "germination", "soak", "soaking",
+    "bioavailability", "anti-nutrient", "anti-nutrients", "phytate", "phytates", "tannin", "oxalate",
+    # Indian foods & staples
+    "roti", "rotis", "chapati", "chapatis", "paratha", "parathas", "naan", "puri", "poori", "phulka", "kulcha",
+    "dal", "dals", "daal", "lentil", "lentils", "pulses", "legume", "legumes",
+    "chana", "chickpea", "chickpeas", "rajma", "moong", "masoor", "urad", "toor", "arhar", "lobia",
+    "paneer", "curd", "dahi", "yogurt", "yoghurt", "chaas", "buttermilk", "lassi", "milk", "cheese",
+    "rice", "pulao", "biryani", "khichdi", "idli", "idlis", "dosa", "dosas", "uttapam", "upma", "poha", "vada",
+    "sabzi", "sabji", "curry", "tadka", "baghar", "chutney", "raita", "sambar", "rasam", "salad",
+    "apple", "banana", "mango", "orange", "papaya", "guava", "fruit", "fruits", "vegetable", "vegetables",
+    "spinach", "palak", "methi", "bhindi", "okra", "gobi", "cauliflower", "potato", "aloo", "tomato", "onion",
+    "turmeric", "haldi", "ginger", "garlic", "cumin", "jeera", "coriander", "mustard", "fenugreek", "spices",
+    "egg", "eggs", "chicken", "fish", "mutton", "meat", "tofu", "soya", "soy", "soybean",
+    "almond", "almonds", "walnut", "walnuts", "cashew", "cashews", "peanut", "peanuts", "seeds", "flaxseed", "chia",
+    "atta", "wheat", "flour", "maida", "besan", "sattu", "oats", "ragi", "bajra", "jowar", "millet", "millets"
+}
+
+OUT_OF_DOMAIN_PATTERNS = [
+    r"\b(fifa|football|soccer|cricket|ipl|nba|messi|ronaldo|world cup|olympics|badminton|tennis|tournament|trophy|match)\b",
+    r"\b(python|javascript|typescript|java|c\+\+|golang|html|css|coding|programming|github|algorithm|binary tree|linked list|bug|debug|code to|write code)\b",
+    r"\b(movie|movies|cinema|actor|actress|hollywood|bollywood|singer|song|lyrics|netflix|celebrity)\b",
+    r"\b(president|prime minister|election|elections|parliament|congress|bjp|senate|politician|war|military|army|navy)\b",
+    r"\b(car|cars|engine|vehicle|tire|tires|mechanic|airplane|flight|quantum mechanics|bitcoin|crypto|ethereum|stock market)\b",
+    r"\b(joke|funny joke|tell me a joke|riddle|who is the president|capital of|weather in|who won)\b"
+]
+
+import re
+
+def is_query_nutrition_related(query: str, vector_score: float = 0.0) -> bool:
+    """Classifies whether an input query is related to food, nutrition, or dietary health."""
+    q_lower = query.lower()
+
+    # 1. Check strong out-of-domain patterns
+    has_ood_pattern = any(re.search(pat, q_lower) for pat in OUT_OF_DOMAIN_PATTERNS)
+
+    # 2. Check in-domain nutrition keywords
+    words = re.findall(r"\b[a-z0-9\-]+\b", q_lower)
+    word_set = set(words)
+    bigrams = {f"{words[i]} {words[i+1]}" for i in range(len(words)-1)}
+    combined_tokens = word_set | bigrams
+
+    matching_keywords = combined_tokens & NUTRITION_KEYWORDS
+    has_nutrition_terms = len(matching_keywords) > 0
+
+    if has_ood_pattern and not has_nutrition_terms:
+        return False
+
+    if vector_score > 0 and vector_score < 0.30 and not has_nutrition_terms:
+        return False
+
+    if has_nutrition_terms:
+        return True
+
+    if vector_score >= 0.35:
+        return True
+
+    return False
+
 class LLMBackendError(Exception):
     """Raised when Groq API encounters an error."""
 
@@ -42,6 +134,7 @@ class NutritionState(TypedDict, total=False):
     draft: str
     retry_count: int
     final_answer: str
+    is_unrelated: bool
 
 # Reusable pipeline objects initialized once at FastAPI startup
 retriever = None
@@ -110,7 +203,18 @@ def generate_with_groq(prompt: str) -> str:
     raise LLMBackendError("Failed to receive a valid response from Groq.")
 
 def classify_nutrition_intent(state: NutritionState) -> Dict[str, Any]:
-    q = state["question"].lower()
+    question = state.get("question", "")
+    if not is_query_nutrition_related(question):
+        return {
+            "intent": "Out of Domain / Unrelated",
+            "search_query": question,
+            "retry_count": state.get("retry_count", 0),
+            "is_unrelated": True,
+            "final_answer": FALLBACK_UNRELATED_ANSWER,
+            "sources": []
+        }
+
+    q = question.lower()
     intent = "General Nutrition"
 
     keyword_map = [
@@ -132,6 +236,7 @@ def classify_nutrition_intent(state: NutritionState) -> Dict[str, Any]:
         "intent": intent,
         "search_query": state["question"],
         "retry_count": state.get("retry_count", 0),
+        "is_unrelated": False,
     }
 
 def retrieve_context(state: NutritionState) -> Dict[str, Any]:
@@ -240,6 +345,14 @@ def rewrite_query(state: NutritionState) -> Dict[str, Any]:
 def fallback_answer(state: NutritionState) -> Dict[str, Any]:
     return {"final_answer": FALLBACK_TEXT}
 
+def fallback_unrelated_answer(state: NutritionState) -> Dict[str, Any]:
+    return {"final_answer": FALLBACK_UNRELATED_ANSWER, "sources": []}
+
+def route_after_intent(state: NutritionState) -> str:
+    if state.get("is_unrelated"):
+        return "fallback_unrelated"
+    return "retrieve"
+
 def build_nutrition_graph():
     g = StateGraph(NutritionState)
     g.add_node("classify_intent", classify_nutrition_intent)
@@ -248,9 +361,14 @@ def build_nutrition_graph():
     g.add_node("review_answer", review_answer)
     g.add_node("rewrite_query", rewrite_query)
     g.add_node("fallback", fallback_answer)
+    g.add_node("fallback_unrelated", fallback_unrelated_answer)
 
     g.add_edge(START, "classify_intent")
-    g.add_edge("classify_intent", "retrieve")
+    g.add_conditional_edges(
+        "classify_intent",
+        route_after_intent,
+        {"retrieve": "retrieve", "fallback_unrelated": "fallback_unrelated"}
+    )
     g.add_edge("retrieve", "draft_answer")
     g.add_edge("draft_answer", "review_answer")
     g.add_conditional_edges(
@@ -260,6 +378,7 @@ def build_nutrition_graph():
     )
     g.add_edge("rewrite_query", "retrieve")
     g.add_edge("fallback", END)
+    g.add_edge("fallback_unrelated", END)
     return g.compile()
 
 def initialize_rag():
@@ -337,10 +456,16 @@ def answer_nutrition_question(question: str, model_provider: str = "lora") -> Di
 
     result = nutrition_graph.invoke({"question": question, "retry_count": 0, "model_provider": model_provider})
     answer = result.get("final_answer", "")
+    is_fallback = (
+        answer == FALLBACK_TEXT or
+        answer == FALLBACK_UNRELATED_ANSWER or
+        "INSUFFICIENT_CONTEXT" in answer
+    )
+    sources = [] if (answer == FALLBACK_UNRELATED_ANSWER or result.get("is_unrelated")) else result.get("sources", [])
     return {
         "answer": answer,
         "intent": result.get("intent", "General Nutrition"),
-        "sources": result.get("sources", []),
+        "sources": sources,
         "retries": result.get("retry_count", 0),
-        "fallback": answer == FALLBACK_TEXT or "INSUFFICIENT_CONTEXT" in answer
+        "fallback": is_fallback
     }

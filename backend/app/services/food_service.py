@@ -29,9 +29,12 @@ class FoodService:
             return []
 
         clean_query = query.strip()
-        # Case-insensitive substring match
         escaped = re.escape(clean_query)
-        regex = re.compile(escaped, re.IGNORECASE)
+        # Use word boundaries for short queries (<= 4 chars) so words like 'who' do not match 'whole'
+        if len(clean_query) <= 4:
+            regex = re.compile(rf"\b{escaped}\b", re.IGNORECASE)
+        else:
+            regex = re.compile(escaped, re.IGNORECASE)
 
         cursor = collection.find(
             {"food_name": {"$regex": regex}},
