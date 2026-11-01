@@ -1,0 +1,50 @@
+{
+  "Meal interpretation and food identification": {
+    "total": 500,
+    "train": 400,
+    "validation": 50,
+    "test": 50
+  },
+  "Nutrition question answering": {
+    "total": 500,
+    "train": 400,
+    "validation": 50,
+    "test": 50
+  },
+  "Portion-size clarification": {
+    "total": 400,
+    "train": 320,
+    "validation": 40,
+    "test": 40
+  },
+  "Structured JSON responses": {
+    "total": 400,
+    "train": 320,
+    "validation": 40,
+    "test": 40
+  },
+  "Indian food and meal knowledge": {
+    "total": 400,
+    "train": 320,
+    "validation": 40,
+    "test": 40
+  },
+  "Uncertainty and missing information": {
+    "total": 300,
+    "train": 240,
+    "validation": 30,
+    "test": 30
+  },
+  "Safe nutrition responses": {
+    "total": 200,
+    "train": 160,
+    "validation": 20,
+    "test": 20
+  },
+  "RAG-style grounded answer behavior": {
+    "total": 300,
+    "train": 240,
+    "validation": 30,
+    "test": 30
+  }
+}

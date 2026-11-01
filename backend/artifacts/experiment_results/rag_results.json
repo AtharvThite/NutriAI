@@ -1,0 +1,184 @@
+{
+  "status": "Evaluated",
+  "eval_timestamp": "2026-11-01T06:59:32Z",
+  "total_documents": 20,
+  "total_chunks": 104,
+  "eval_queries_count": 100,
+  "k": 4,
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "vector_store": "FAISS (with Qdrant cloud/container adapter)",
+  "precision_at_k": 0.6375,
+  "recall_at_k": 2.0867,
+  "mrr": 0.8192,
+  "avg_latency_ms": 6.42,
+  "query_evaluations": [
+    {
+      "question": "What are the three primary energy-yielding macronutrients and what are their respective caloric densities?",
+      "expected_ids": [
+        "macronutrients_001"
+      ],
+      "retrieved_ids": [
+        "macronutrients_001",
+        "nutrition_labels_001",
+        "balanced_diet_001",
+        "macronutrients_001"
+      ],
+      "precision_at_k": 0.5,
+      "recall_at_k": 2.0,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 38.72
+    },
+    {
+      "question": "How do regional carbohydrate sources differ between North India and South India?",
+      "expected_ids": [
+        "indian_food_habits_001",
+        "macronutrients_001"
+      ],
+      "retrieved_ids": [
+        "indian_food_habits_001",
+        "macronutrients_001",
+        "indian_food_habits_001",
+        "carbohydrates_001"
+      ],
+      "precision_at_k": 0.75,
+      "recall_at_k": 1.5,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 7.51
+    },
+    {
+      "question": "Why is dietary fat necessary for human physiology despite its high caloric density?",
+      "expected_ids": [
+        "macronutrients_001",
+        "fats_001"
+      ],
+      "retrieved_ids": [
+        "macronutrients_001",
+        "fats_001",
+        "macronutrients_001",
+        "fats_001"
+      ],
+      "precision_at_k": 1.0,
+      "recall_at_k": 2.0,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.11
+    },
+    {
+      "question": "What is the acceptable macronutrient distribution range (AMDR) for healthy adults?",
+      "expected_ids": [
+        "macronutrients_001"
+      ],
+      "retrieved_ids": [
+        "macronutrients_001",
+        "vitamins_001",
+        "nutrition_labels_001",
+        "macronutrients_001"
+      ],
+      "precision_at_k": 0.5,
+      "recall_at_k": 2.0,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 6.55
+    },
+    {
+      "question": "Can I calculate the exact calories of a cooked meal just from knowing the ingredients were dal and rice?",
+      "expected_ids": [
+        "macronutrients_001",
+        "nutrition_uncertainty_and_limitations_001"
+      ],
+      "retrieved_ids": [
+        "indian_lunch_and_dinner_001",
+        "food_portions_and_measurements_001",
+        "nutrition_uncertainty_and_limitations_001",
+        "food_portions_and_measurements_001"
+      ],
+      "precision_at_k": 0.25,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.333,
+      "latency_ms": 6.49
+    },
+    {
+      "question": "What is the biological importance of dietary protein and essential amino acids?",
+      "expected_ids": [
+        "protein_001"
+      ],
+      "retrieved_ids": [
+        "protein_001",
+        "protein_001",
+        "protein_001",
+        "protein_001"
+      ],
+      "precision_at_k": 1.0,
+      "recall_at_k": 4.0,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 5.47
+    },
+    {
+      "question": "What is protein complementarity and how does the combination of dal and rice achieve it?",
+      "expected_ids": [
+        "protein_001",
+        "pulses_and_legumes_001",
+        "vegetarian_nutrition_001"
+      ],
+      "retrieved_ids": [
+        "protein_001",
+        "protein_001",
+        "protein_001",
+        "protein_001"
+      ],
+      "precision_at_k": 1.0,
+      "recall_at_k": 1.333,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 5.31
+    },
+    {
+      "question": "Which vegetarian Indian foods provide significant amounts of protein?",
+      "expected_ids": [
+        "protein_001",
+        "vegetarian_nutrition_001"
+      ],
+      "retrieved_ids": [
+        "vegetarian_nutrition_001",
+        "protein_001",
+        "protein_001",
+        "vegetarian_nutrition_001"
+      ],
+      "precision_at_k": 1.0,
+      "recall_at_k": 2.0,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 4.94
+    },
+    {
+      "question": "Does eating paneer provide pure protein without any other macronutrients?",
+      "expected_ids": [
+        "protein_001",
+        "dairy_and_alternatives_001"
+      ],
+      "retrieved_ids": [
+        "protein_001",
+        "protein_001",
+        "dairy_and_alternatives_001",
+        "dairy_and_alternatives_001"
+      ],
+      "precision_at_k": 1.0,
+      "recall_at_k": 2.0,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 5.42
+    },
+    {
+      "question": "How does soaking and sprouting legumes affect their protein digestibility?",
+      "expected_ids": [
+        "protein_001",
+        "pulses_and_legumes_001"
+      ],
+      "retrieved_ids": [
+        "protein_001",
+        "protein_001",
+        "pulses_and_legumes_001",
+        "pulses_and_legumes_001"
+      ],
+      "precision_at_k": 1.0,
+      "recall_at_k": 2.0,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 5.83
+    }
+  ]
+}

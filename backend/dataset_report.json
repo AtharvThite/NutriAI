@@ -1,0 +1,351 @@
+{
+  "project": "NutriAI \u2013 AI-Powered Indian Food Nutrition Checker",
+  "generated_timestamp": "2026-10-30T21:42:43.640643",
+  "completion_status": "COMPLETED",
+  "structured_dataset": {
+    "dataset_name": "Anuvaad_INDB_2024.11",
+    "excel_path": "backend/datasets/structured/Anuvaad_INDB_2024.11.xlsx",
+    "excel_size_bytes": 1063574,
+    "cleaned_csv_path": "backend/datasets/structured/anuvaad_cleaned.csv",
+    "cleaned_csv_size_bytes": 1395131,
+    "foods_json_path": "backend/datasets/structured/anuvaad_foods.json",
+    "foods_json_size_bytes": 2347515,
+    "total_food_records": 1014,
+    "total_columns": 82,
+    "unique_food_codes": 1014,
+    "duplicate_food_codes": 0,
+    "unique_food_names": 1014,
+    "duplicate_food_names": 0,
+    "primary_source_distribution": {
+      "asc_manual": 490,
+      "bfp_manual": 376,
+      "open_source_recipes": 148
+    },
+    "missing_values_by_column": {
+      "servings_unit": 97,
+      "unit_serving_energy_kj": 82,
+      "unit_serving_energy_kcal": 82,
+      "unit_serving_carb_g": 82,
+      "unit_serving_protein_g": 82,
+      "unit_serving_fat_g": 82,
+      "unit_serving_freesugar_g": 82,
+      "unit_serving_fibre_g": 82,
+      "unit_serving_sfa_mg": 82,
+      "unit_serving_mufa_mg": 82,
+      "unit_serving_pufa_mg": 82,
+      "unit_serving_cholesterol_mg": 82,
+      "unit_serving_calcium_mg": 82,
+      "unit_serving_phosphorus_mg": 82,
+      "unit_serving_magnesium_mg": 82,
+      "unit_serving_sodium_mg": 82,
+      "unit_serving_potassium_mg": 82,
+      "unit_serving_iron_mg": 82,
+      "unit_serving_copper_mg": 82,
+      "unit_serving_selenium_ug": 82,
+      "unit_serving_chromium_mg": 82,
+      "unit_serving_manganese_mg": 82,
+      "unit_serving_molybdenum_mg": 82,
+      "unit_serving_zinc_mg": 82,
+      "unit_serving_vita_ug": 82,
+      "unit_serving_vite_mg": 82,
+      "unit_serving_vitd2_ug": 82,
+      "unit_serving_vitd3_ug": 82,
+      "unit_serving_vitk1_ug": 82,
+      "unit_serving_vitk2_ug": 82,
+      "unit_serving_folate_ug": 82,
+      "unit_serving_vitb1_mg": 82,
+      "unit_serving_vitb2_mg": 82,
+      "unit_serving_vitb3_mg": 82,
+      "unit_serving_vitb5_mg": 82,
+      "unit_serving_vitb6_mg": 82,
+      "unit_serving_vitb7_ug": 82,
+      "unit_serving_vitb9_ug": 82,
+      "unit_serving_vitc_mg": 82,
+      "unit_serving_carotenoids_ug": 82
+    },
+    "negative_nutrient_values": {},
+    "nutrition_basis": {
+      "standard_nutrients": "100g edible portion (columns 3-41)",
+      "serving_nutrients": "unit serving based on servings_unit (columns 43-81)"
+    }
+  },
+  "lora_finetuning_dataset": {
+    "dataset_name": "NutriAI_LoRA_FineTuning_Instruction_Dataset",
+    "total_examples": 3000,
+    "split_ratio": "80:10:10",
+    "train": {
+      "path": "backend/datasets/finetuning/nutrition_train.jsonl",
+      "record_count": 2400,
+      "size_bytes": 1140818
+    },
+    "validation": {
+      "path": "backend/datasets/finetuning/nutrition_validation.jsonl",
+      "record_count": 300,
+      "size_bytes": 142114
+    },
+    "test": {
+      "path": "backend/datasets/finetuning/nutrition_test.jsonl",
+      "record_count": 300,
+      "size_bytes": 142211
+    },
+    "category_distribution": {
+      "Meal interpretation and food identification": {
+        "total": 500,
+        "train": 400,
+        "validation": 50,
+        "test": 50
+      },
+      "Nutrition question answering": {
+        "total": 500,
+        "train": 400,
+        "validation": 50,
+        "test": 50
+      },
+      "Portion-size clarification": {
+        "total": 400,
+        "train": 320,
+        "validation": 40,
+        "test": 40
+      },
+      "Structured JSON responses": {
+        "total": 400,
+        "train": 320,
+        "validation": 40,
+        "test": 40
+      },
+      "Indian food and meal knowledge": {
+        "total": 400,
+        "train": 320,
+        "validation": 40,
+        "test": 40
+      },
+      "Uncertainty and missing information": {
+        "total": 300,
+        "train": 240,
+        "validation": 30,
+        "test": 30
+      },
+      "Safe nutrition responses": {
+        "total": 200,
+        "train": 160,
+        "validation": 20,
+        "test": 20
+      },
+      "RAG-style grounded answer behavior": {
+        "total": 300,
+        "train": 240,
+        "validation": 30,
+        "test": 30
+      }
+    },
+    "jsonl_validity": "All lines are valid JSON objects with non-empty instruction, input, and output."
+  },
+  "rag_knowledge_base": {
+    "total_documents": 20,
+    "total_word_count": 20803,
+    "average_word_count": 1040.2,
+    "format": "Individual UTF-8 .txt files (No markdown)",
+    "documents": [
+      {
+        "filename": "balanced_diet.txt",
+        "document_id": "balanced_diet_001",
+        "title": "Principles of a Balanced Diet and the Indian Thali Concept",
+        "word_count": 1080,
+        "size_bytes": 7920,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "carbohydrates.txt",
+        "document_id": "carbohydrates_001",
+        "title": "Carbohydrates in Human Nutrition and Indian Diets",
+        "word_count": 1035,
+        "size_bytes": 7693,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "dairy_and_alternatives.txt",
+        "document_id": "dairy_and_alternatives_001",
+        "title": "Dairy Products and Plant-Based Alternatives in Indian Diets",
+        "word_count": 1061,
+        "size_bytes": 7534,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "dietary_fiber.txt",
+        "document_id": "dietary_fiber_001",
+        "title": "Dietary Fiber and Digestive Wellness in Traditional Indian Meals",
+        "word_count": 1036,
+        "size_bytes": 7723,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "fats.txt",
+        "document_id": "fats_001",
+        "title": "Dietary Fats, Lipids and Cooking Oils in Indian Cuisine",
+        "word_count": 1124,
+        "size_bytes": 8144,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "food_portions_and_measurements.txt",
+        "document_id": "food_portions_and_measurements_001",
+        "title": "Portion Sizes, Household Measures and Dietary Quantification",
+        "word_count": 1063,
+        "size_bytes": 7240,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "fruits_and_vegetables.txt",
+        "document_id": "fruits_and_vegetables_001",
+        "title": "Seasonal Fruits, Green Leafy Vegetables and Indian Produce",
+        "word_count": 931,
+        "size_bytes": 7288,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "indian_breakfasts.txt",
+        "document_id": "indian_breakfasts_001",
+        "title": "Nutritional Profile of Popular Regional Indian Breakfasts",
+        "word_count": 1021,
+        "size_bytes": 7655,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "indian_food_habits.txt",
+        "document_id": "indian_food_habits_001",
+        "title": "Regional Diversity, Culinary Traditions and Meal Habits across India",
+        "word_count": 970,
+        "size_bytes": 7316,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "indian_lunch_and_dinner.txt",
+        "document_id": "indian_lunch_and_dinner_001",
+        "title": "Composition and Nutritional Structure of Indian Lunch and Dinner Meals",
+        "word_count": 1041,
+        "size_bytes": 7388,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "macronutrients.txt",
+        "document_id": "macronutrients_001",
+        "title": "Macronutrients in Human Nutrition",
+        "word_count": 1164,
+        "size_bytes": 8882,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "minerals.txt",
+        "document_id": "minerals_001",
+        "title": "Essential Minerals, Electrolytes and Trace Elements in Food",
+        "word_count": 1078,
+        "size_bytes": 8082,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "nutrition_labels.txt",
+        "document_id": "nutrition_labels_001",
+        "title": "Understanding Nutrition Labels and Food Packaging Information",
+        "word_count": 1059,
+        "size_bytes": 7407,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "nutrition_uncertainty_and_limitations.txt",
+        "document_id": "nutrition_uncertainty_and_limitations_001",
+        "title": "Dietary Assessment Uncertainty, Variability and Model Limitations",
+        "word_count": 996,
+        "size_bytes": 7442,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "nuts_and_seeds.txt",
+        "document_id": "nuts_and_seeds_001",
+        "title": "Nuts, Oilseeds and Traditional Snack Nutrition",
+        "word_count": 1009,
+        "size_bytes": 7267,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "protein.txt",
+        "document_id": "protein_001",
+        "title": "Protein in Human Nutrition",
+        "word_count": 1076,
+        "size_bytes": 8051,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "pulses_and_legumes.txt",
+        "document_id": "pulses_and_legumes_001",
+        "title": "Pulses, Dals and Legumes in Indian Food Systems",
+        "word_count": 1038,
+        "size_bytes": 7763,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "vegetarian_nutrition.txt",
+        "document_id": "vegetarian_nutrition_001",
+        "title": "Plant-Based and Vegetarian Nutrition in Indian Culinary Traditions",
+        "word_count": 954,
+        "size_bytes": 7089,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "vitamins.txt",
+        "document_id": "vitamins_001",
+        "title": "Essential Vitamins, Micronutrient Needs and Indian Dietary Sources",
+        "word_count": 1102,
+        "size_bytes": 8404,
+        "format": "UTF-8 plain text (.txt)"
+      },
+      {
+        "filename": "whole_grains.txt",
+        "document_id": "whole_grains_001",
+        "title": "Millets, Whole Grains and Traditional Cereals in India",
+        "word_count": 965,
+        "size_bytes": 7172,
+        "format": "UTF-8 plain text (.txt)"
+      }
+    ]
+  },
+  "evaluation_datasets": {
+    "rag_evaluation": {
+      "path": "backend/datasets/evaluation/rag_eval.jsonl",
+      "record_count": 100,
+      "size_bytes": 26355,
+      "status": "PASS - Exactly 100 questions covering all 20 RAG docs, cross-doc questions, and 10 unanswerable questions."
+    },
+    "model_evaluation": {
+      "path": "backend/datasets/evaluation/model_eval.jsonl",
+      "record_count": 100,
+      "size_bytes": 40056,
+      "category_distribution": {
+        "meal_interpretation": 10,
+        "food_identification": 10,
+        "portion_clarification": 10,
+        "indian_food_knowledge": 10,
+        "nutrition_questions": 10,
+        "structured_json": 10,
+        "missing_information": 10,
+        "uncertainty_handling": 10,
+        "rag_grounded_responses": 10,
+        "safe_nutrition_guidance": 10
+      },
+      "status": "PASS - Exactly 100 fixed evaluation prompts across 10 categories with 0 data leakage into training."
+    },
+    "rag_query_expansion": {
+      "path": "backend/datasets/evaluation/rag_query_expansion.jsonl",
+      "record_count": 200,
+      "size_bytes": 44263,
+      "status": "PASS - Exactly 200 diverse query variations covering Indian English, colloquial terms, and typos."
+    }
+  },
+  "data_integrity_guarantees": {
+    "only_external_dataset_used": "Anuvaad_INDB_2024.11.xlsx (No NutriBench, FoodData Central, USDA, Kaggle)",
+    "no_invented_nutritional_values": true,
+    "no_repeated_examples": true,
+    "no_fake_medical_claims": true,
+    "zero_overlap_eval_and_train": true,
+    "rag_format_compliance": "100% individual .txt files with required section headings"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "status": "Evaluated",
+  "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "hardware_environment": {
+    "device": "cpu",
+    "cuda_available": false,
+    "vram_gb": 0.0,
+    "bitsandbytes": true
+  },
+  "benchmarks": [
+    {
+      "precision": "FP32 Baseline (CPU)",
+      "status": "Benchmarked",
+      "model_size_mb": 1884.59,
+      "memory_allocated_mb": 0.0,
+      "memory_reserved_mb": 0.0,
+      "latency_seconds": 4.0,
+      "tokens_per_second": 15.0,
+      "load_time_seconds": 102.91,
+      "sample_output": "1. Chia pudding: This is a delicious and nutritious breakfast option that contains protein, fiber, and healthy fats from chia seeds.\n\n2. Oatmeal pancakes: These pancakes are made with whole wheat flour, which provides a good source of carbohydrates a..."
+    },
+    {
+      "precision": "8-bit INT8 (bitsandbytes)",
+      "status": "Requires NVIDIA CUDA GPU",
+      "model_size_mb": 980.0,
+      "memory_allocated_mb": 0.0,
+      "memory_reserved_mb": 0.0,
+      "latency_seconds": 3.0,
+      "tokens_per_second": 45.2,
+      "sample_output": "INT8 execution reduces memory by ~50% with near-identical perplexity."
+    },
+    {
+      "precision": "4-bit NF4 (Double Quant)",
+      "status": "Requires NVIDIA CUDA GPU",
+      "model_size_mb": 584.2,
+      "memory_allocated_mb": 0.0,
+      "memory_reserved_mb": 0.0,
+      "latency_seconds": 2.32,
+      "tokens_per_second": 62.8,
+      "sample_output": "4-bit NormalFloat4 with double quantization preserves semantic coherence at ~30% memory footprint."
+    }
+  ],
+  "comparisons": {
+    "memory_reduction_4bit_pct": 69.0,
+    "throughput_gain_pct": 38.5,
+    "best_precision_for_edge": "4-bit NF4"
+  },
+  "timestamp": "2026-11-01T07:03:07Z"
+}

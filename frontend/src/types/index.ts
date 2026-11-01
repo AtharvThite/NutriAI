@@ -1,0 +1,157 @@
+export interface FoodItem {
+  food_code: string;
+  food_name: string;
+  nutrition_basis: string;
+  energy_kcal?: number | null;
+  protein_g?: number | null;
+  carb_g?: number | null;
+  fat_g?: number | null;
+  fibre_g?: number | null;
+  servings_unit?: string | null;
+  nutrients?: Record<string, number | null>;
+  serving_nutrients?: Record<string, number | null>;
+}
+
+export interface MealItemInput {
+  food_code: string;
+  quantity_g: number;
+  food_name?: string;
+  servings_unit?: string | null;
+}
+
+export interface ItemNutrientBreakdown {
+  food_code: string;
+  food_name: string;
+  quantity_g: number;
+  nutrients: Record<string, number | null>;
+}
+
+export interface MacronutrientRatios {
+  carb_energy_pct: number;
+  protein_energy_pct: number;
+  fat_energy_pct: number;
+}
+
+export interface NutritionAnalysis {
+  total_weight_g: number;
+  total_nutrients: Record<string, number | null>;
+  items_breakdown: ItemNutrientBreakdown[];
+  macronutrient_ratios: MacronutrientRatios;
+}
+
+export interface Meal {
+  meal_id: string;
+  meal_name: string;
+  total_weight_g: number;
+  items: ItemNutrientBreakdown[];
+  total_nutrients: Record<string, number | null>;
+  macronutrient_ratios: MacronutrientRatios;
+  created_at: string;
+}
+
+export interface ChatSource {
+  document_id: string;
+  title: string;
+  snippet?: string | null;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  sources?: ChatSource[];
+  requires_clarification?: boolean;
+  intent?: string | null;
+  timestamp: string;
+}
+
+export interface SystemHealth {
+  status: string;
+  database: {
+    mongodb_connected: boolean;
+  };
+  rag: {
+    ready: boolean;
+  };
+  hardware: {
+    cuda_available: boolean;
+    device: string;
+    vram_gb: number;
+  };
+}
+
+export interface ExperimentSummary {
+  lora_status: string;
+  qlora_status: string;
+  quantization_status: string;
+  rag_status: string;
+  documents_indexed: number;
+  foods_indexed: number;
+  gpu_available: boolean;
+  cuda_device: string;
+}
+
+export interface LoRARun {
+  run_name: string;
+  learning_rate: number;
+  epochs: number;
+  lora_r: number;
+  lora_alpha: number;
+  trainable_parameters: number;
+  all_parameters: number;
+  trainable_percentage: number;
+  training_loss: number;
+  training_time_seconds: number;
+}
+
+export interface LoRAResults {
+  status: string;
+  base_model: string;
+  best_run?: string;
+  runs: LoRARun[];
+  evaluation_samples?: Array<{ prompt: string; expected: string }>;
+}
+
+export interface QuantizationBenchmark {
+  precision: string;
+  status: string;
+  model_size_mb: number;
+  memory_allocated_mb: number;
+  memory_reserved_mb: number;
+  latency_seconds: number;
+  tokens_per_second: number;
+  sample_output?: string;
+}
+
+export interface QuantizationResults {
+  status: string;
+  base_model: string;
+  benchmarks: QuantizationBenchmark[];
+  comparisons?: {
+    memory_reduction_4bit_pct: number;
+    throughput_gain_pct: number;
+    best_precision_for_edge: string;
+  };
+}
+
+export interface RAGMetrics {
+  status: string;
+  total_documents: number;
+  total_chunks: number;
+  eval_queries_count?: number;
+  embedding_model: string;
+  vector_store: string;
+  precision_at_k: number;
+  recall_at_k: number;
+  mrr: number;
+  avg_latency_ms: number;
+  query_evaluations?: Array<{
+    question: string;
+    expected_ids: string[];
+    retrieved_ids: string[];
+    precision_at_k: number;
+    recall_at_k: number;
+    reciprocal_rank: number;
+    latency_ms: number;
+  }>;
+}

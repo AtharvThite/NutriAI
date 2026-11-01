@@ -1,0 +1,42 @@
+{
+  "status": "Evaluated",
+  "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "best_run": "qwen_lora_r4_lr2e4",
+  "runs": [
+    {
+      "run_name": "qwen_lora_r4_lr2e4",
+      "learning_rate": 0.0002,
+      "epochs": 1,
+      "lora_r": 4,
+      "lora_alpha": 16,
+      "trainable_parameters": 270336,
+      "all_parameters": 494303104,
+      "trainable_percentage": 0.0547,
+      "training_loss": 3.2041,
+      "training_time_seconds": 33.07
+    },
+    {
+      "run_name": "qwen_lora_r8_lr2e4",
+      "learning_rate": 0.0002,
+      "epochs": 1,
+      "lora_r": 8,
+      "lora_alpha": 16,
+      "trainable_parameters": 540672,
+      "all_parameters": 494573440,
+      "trainable_percentage": 0.1093,
+      "training_loss": 3.2121,
+      "training_time_seconds": 32.65
+    }
+  ],
+  "evaluation_samples": [
+    {
+      "prompt": "How does South Indian fermentation in idlis and dosas improve nutrition?",
+      "expected": "Degrades phytic acid, improves B-vitamin availability, enhances protein digestibility."
+    },
+    {
+      "prompt": "What are optimal Indian plant-based sources of bioavailable iron?",
+      "expected": "Dark leafy greens, black chickpeas, bajra, amaranth combined with vitamin C (amla, lemon)."
+    }
+  ],
+  "timestamp": "2026-11-01T07:24:52Z"
+}

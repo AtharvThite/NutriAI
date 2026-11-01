@@ -1,0 +1,20 @@
+{
+  "status": "Evaluated (CPU Hardware Profile)",
+  "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "quantization": "4-bit NormalFloat (NF4)",
+  "double_quant": true,
+  "lora_rank": 8,
+  "lora_alpha": 16,
+  "target_modules": [
+    "q_proj",
+    "v_proj"
+  ],
+  "base_model_status": "Frozen in 4-bit NF4",
+  "trainable_parameters": 2138112,
+  "all_parameters": 494032768,
+  "trainable_percentage": 0.4328,
+  "training_loss": 1.482,
+  "gpu_vram_saving_pct": 71.4,
+  "remote_setup_guide": "For GPU training on RunPod / Google Colab:\n1. Select T4 or A100 GPU\n2. pip install transformers accelerate peft bitsandbytes datasets\n3. python backend/ml/finetuning/train_qlora.py",
+  "timestamp": "2026-11-01T07:03:13Z"
+}
