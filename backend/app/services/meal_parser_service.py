@@ -67,11 +67,32 @@ def load_lora_parser_model() -> Tuple[Optional[Any], Optional[Any]]:
             tokenizer.pad_token = tokenizer.eos_token
 
         # Load Base Model
-        base_model = AutoModelForCausalLM.from_pretrained(
-            settings.BASE_MODEL_NAME,
-            torch_dtype=torch.float32,
-            low_cpu_mem_usage=True
-        )
+        if device == "cuda":
+            if getattr(settings, "MODEL_QUANTIZATION", "none").lower() == "4bit":
+                from transformers import BitsAndBytesConfig
+                bnb_config = BitsAndBytesConfig(
+                    load_in_4bit=True,
+                    bnb_4bit_quant_type="nf4",
+                    bnb_4bit_compute_dtype=torch.float16,
+                    bnb_4bit_use_double_quant=True
+                )
+                base_model = AutoModelForCausalLM.from_pretrained(
+                    settings.BASE_MODEL_NAME,
+                    quantization_config=bnb_config,
+                    device_map="auto"
+                )
+            else:
+                base_model = AutoModelForCausalLM.from_pretrained(
+                    settings.BASE_MODEL_NAME,
+                    torch_dtype=torch.float16,
+                    device_map="auto"
+                )
+        else:
+            base_model = AutoModelForCausalLM.from_pretrained(
+                settings.BASE_MODEL_NAME,
+                torch_dtype=torch.float32,
+                low_cpu_mem_usage=True
+            )
 
         # Attach LoRA Adapter
         logger.info("Attaching fine-tuned LoRA weights from: %s", adapter_path)
@@ -268,8 +289,8 @@ class MealParserService:
                     f"<|im_start|>assistant\n"
                 )
                 inputs = tokenizer(formatted_prompt, return_tensors="pt")
-                device = next(model.parameters()).device
-                inputs = {k: v.to(device) for k, v in inputs.items()}
+                target_device = getattr(model, "device", None) or next(model.parameters()).device
+                inputs = {k: v.to(target_device) for k, v in inputs.items()}
 
                 with torch.no_grad():
                     outputs = model.generate(

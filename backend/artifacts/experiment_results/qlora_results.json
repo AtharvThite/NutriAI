@@ -1,5 +1,5 @@
 {
-  "status": "Evaluated (CPU Hardware Profile)",
+  "status": "Evaluated (CUDA QLoRA Executed)",
   "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
   "quantization": "4-bit NormalFloat (NF4)",
   "double_quant": true,
@@ -10,11 +10,17 @@
     "v_proj"
   ],
   "base_model_status": "Frozen in 4-bit NF4",
-  "trainable_parameters": 2138112,
-  "all_parameters": 494032768,
-  "trainable_percentage": 0.4328,
-  "training_loss": 1.482,
+  "trainable_parameters": 540672,
+  "all_parameters": 494573440,
+  "trainable_percentage": 0.1093,
+  "training_loss": 3.1396,
+  "training_time_seconds": 17.33,
+  "training_samples": 120,
+  "vram_allocated_mb": 702.94,
+  "vram_reserved_mb": 3390.0,
   "gpu_vram_saving_pct": 71.4,
-  "remote_setup_guide": "For GPU training on RunPod / Google Colab:\n1. Select T4 or A100 GPU\n2. pip install transformers accelerate peft bitsandbytes datasets\n3. python backend/ml/finetuning/train_qlora.py",
-  "timestamp": "2026-11-01T07:03:13Z"
+  "device": "cuda",
+  "device_name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+  "adapter_saved_path": "artifacts/qlora_adapter/qwen_qlora_r8",
+  "timestamp": "2026-11-01T15:13:11Z"
 }

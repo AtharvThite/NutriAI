@@ -45,11 +45,33 @@ def load_local_lora_model():
     logger.info("Loading base model '%s' for local LoRA inference...", settings.BASE_MODEL_NAME)
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    base_model = AutoModelForCausalLM.from_pretrained(
-        settings.BASE_MODEL_NAME,
-        torch_dtype=torch.float32,
-        low_cpu_mem_usage=True
-    )
+    if device == "cuda":
+        if getattr(settings, "MODEL_QUANTIZATION", "none").lower() == "4bit":
+            from transformers import BitsAndBytesConfig
+            bnb_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_compute_dtype=torch.float16,
+                bnb_4bit_use_double_quant=True
+            )
+            base_model = AutoModelForCausalLM.from_pretrained(
+                settings.BASE_MODEL_NAME,
+                quantization_config=bnb_config,
+                device_map="auto"
+            )
+        else:
+            base_model = AutoModelForCausalLM.from_pretrained(
+                settings.BASE_MODEL_NAME,
+                torch_dtype=torch.float16,
+                device_map="auto"
+            )
+    else:
+        base_model = AutoModelForCausalLM.from_pretrained(
+            settings.BASE_MODEL_NAME,
+            torch_dtype=torch.float32,
+            low_cpu_mem_usage=True
+        )
+
     _local_tokenizer = AutoTokenizer.from_pretrained(adapter_path)
     if _local_tokenizer.pad_token is None:
         _local_tokenizer.pad_token = _local_tokenizer.eos_token
@@ -58,7 +80,7 @@ def load_local_lora_model():
     _local_model = PeftModel.from_pretrained(base_model, adapter_path)
     _local_model.eval()
 
-    logger.info("Local Fine-Tuned LoRA Model is ready for inference on %s.", device)
+    logger.info("Local Fine-Tuned LoRA Model is ready for GPU/CPU inference on %s.", device)
     return _local_model, _local_tokenizer
 
 def generate_with_local_lora(prompt: str, max_new_tokens: int = 150) -> str:
@@ -75,8 +97,8 @@ def generate_with_local_lora(prompt: str, max_new_tokens: int = 150) -> str:
     )
 
     inputs = tokenizer(formatted_prompt, return_tensors="pt")
-    device = next(model.parameters()).device
-    inputs = {k: v.to(device) for k, v in inputs.items()}
+    target_device = getattr(model, "device", None) or next(model.parameters()).device
+    inputs = {k: v.to(target_device) for k, v in inputs.items()}
 
     with torch.no_grad():
         outputs = model.generate(

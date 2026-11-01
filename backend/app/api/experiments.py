@@ -124,6 +124,17 @@ def get_quantization_experiments():
         }
     return data
 
+@router.get("/experiments/qlora")
+def get_qlora_experiments():
+    data = load_result_json("qlora_results.json")
+    if not data:
+        return {
+            "status": "Not evaluated yet",
+            "message": "Run backend/ml/finetuning/train_qlora.py to execute 4-bit NF4 QLoRA training on GPU.",
+            "base_model": settings.BASE_MODEL_NAME
+        }
+    return data
+
 @router.get("/experiments/rag")
 def get_rag_experiments():
     data = load_result_json("rag_results.json")

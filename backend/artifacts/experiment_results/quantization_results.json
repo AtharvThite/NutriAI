@@ -2,48 +2,51 @@
   "status": "Evaluated",
   "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
   "hardware_environment": {
-    "device": "cpu",
-    "cuda_available": false,
-    "vram_gb": 0.0,
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "cuda_available": true,
+    "vram_gb": 3.73,
     "bitsandbytes": true
   },
   "benchmarks": [
     {
-      "precision": "FP32 Baseline (CPU)",
+      "precision": "FP16 Baseline",
       "status": "Benchmarked",
-      "model_size_mb": 1884.59,
-      "memory_allocated_mb": 0.0,
-      "memory_reserved_mb": 0.0,
-      "latency_seconds": 4.0,
-      "tokens_per_second": 15.0,
-      "load_time_seconds": 102.91,
+      "model_size_mb": 942.29,
+      "memory_allocated_mb": 950.17,
+      "memory_reserved_mb": 992.0,
+      "latency_seconds": 1.799,
+      "tokens_per_second": 33.36,
+      "load_time_seconds": 2.02,
       "sample_output": "1. Chia pudding: This is a delicious and nutritious breakfast option that contains protein, fiber, and healthy fats from chia seeds.\n\n2. Oatmeal pancakes: These pancakes are made with whole wheat flour, which provides a good source of carbohydrates a..."
     },
     {
-      "precision": "8-bit INT8 (bitsandbytes)",
-      "status": "Requires NVIDIA CUDA GPU",
-      "model_size_mb": 980.0,
-      "memory_allocated_mb": 0.0,
-      "memory_reserved_mb": 0.0,
-      "latency_seconds": 3.0,
-      "tokens_per_second": 45.2,
-      "sample_output": "INT8 execution reduces memory by ~50% with near-identical perplexity."
+      "precision": "8-bit INT8",
+      "status": "Benchmarked",
+      "model_size_mb": 601.04,
+      "memory_allocated_mb": 602.23,
+      "memory_reserved_mb": 648.0,
+      "latency_seconds": 11.054,
+      "tokens_per_second": 5.43,
+      "load_time_seconds": 1.2,
+      "sample_output": "1. Oatmeal: A nutritious and filling breakfast option that is high in fiber, protein, and healthy fats.\n2. Whole-grain toast: A simple yet satisfying breakfast option that can be topped with eggs or cheese for added protein and nutrients.\n3. Smoothie..."
     },
     {
-      "precision": "4-bit NF4 (Double Quant)",
-      "status": "Requires NVIDIA CUDA GPU",
-      "model_size_mb": 584.2,
-      "memory_allocated_mb": 0.0,
-      "memory_reserved_mb": 0.0,
-      "latency_seconds": 2.32,
-      "tokens_per_second": 62.8,
-      "sample_output": "4-bit NormalFloat4 with double quantization preserves semantic coherence at ~30% memory footprint."
+      "precision": "4-bit NF4 Double Quant",
+      "status": "Benchmarked",
+      "model_size_mb": 430.42,
+      "memory_allocated_mb": 436.29,
+      "memory_reserved_mb": 456.0,
+      "latency_seconds": 1.934,
+      "tokens_per_second": 31.03,
+      "load_time_seconds": 0.91,
+      "sample_output": "Three nutrient-dense Indian breakfast options with balanced macronutrients are:\n\n1. Chana Masala: This is a popular dish that combines lentils, chickpeas, and spices like cumin, coriander, and turmeric to create a hearty and flavorful meal. It's rich..."
     }
   ],
   "comparisons": {
-    "memory_reduction_4bit_pct": 69.0,
-    "throughput_gain_pct": 38.5,
+    "memory_reduction_4bit_pct": 54.3,
+    "throughput_gain_pct": -7.0,
     "best_precision_for_edge": "4-bit NF4"
   },
-  "timestamp": "2026-11-01T07:03:07Z"
+  "timestamp": "2026-11-01T15:11:25Z"
 }

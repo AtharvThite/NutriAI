@@ -126,12 +126,43 @@ export interface QuantizationBenchmark {
 export interface QuantizationResults {
   status: string;
   base_model: string;
+  hardware_environment?: {
+    device: string;
+    device_name?: string;
+    cuda_available: boolean;
+    vram_gb: number;
+    bitsandbytes: boolean;
+  };
   benchmarks: QuantizationBenchmark[];
   comparisons?: {
     memory_reduction_4bit_pct: number;
     throughput_gain_pct: number;
     best_precision_for_edge: string;
   };
+}
+
+export interface QLoRAResults {
+  status: string;
+  base_model: string;
+  quantization: string;
+  double_quant?: boolean;
+  lora_rank?: number;
+  lora_alpha?: number;
+  target_modules?: string[];
+  base_model_status?: string;
+  trainable_parameters: number;
+  all_parameters: number;
+  trainable_percentage: number;
+  training_loss: number;
+  training_time_seconds?: number;
+  training_samples?: number;
+  vram_allocated_mb?: number;
+  vram_reserved_mb?: number;
+  gpu_vram_saving_pct: number;
+  device?: string;
+  device_name?: string;
+  adapter_saved_path?: string;
+  timestamp?: string;
 }
 
 export interface RAGMetrics {

@@ -8,6 +8,7 @@ import sys
 import re
 import logging
 from typing import List, Tuple
+import torch
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -94,7 +95,11 @@ def split_documents(docs: List[Document]) -> List[Document]:
 
 def build_vector_store(chunks: List[Document]):
     """Builds Qdrant vector store if accessible, else saves FAISS index locally."""
-    embeddings = HuggingFaceEmbeddings(model_name=settings.EMBEDDING_MODEL)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    embeddings = HuggingFaceEmbeddings(
+        model_name=settings.EMBEDDING_MODEL,
+        model_kwargs={"device": device}
+    )
     qdrant_ready = False
 
     if settings.QDRANT_URL:

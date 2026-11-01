@@ -10,6 +10,7 @@ import time
 import logging
 from typing import List, Dict, Any, TypedDict, Optional
 import requests
+import torch
 from dotenv import load_dotenv
 
 from langchain_core.documents import Document
@@ -385,8 +386,12 @@ def initialize_rag():
     """Initializes embeddings, connects to Qdrant or FAISS, and compiles the LangGraph workflow."""
     global retriever, vector_store, nutrition_graph, embedding_model
 
-    logger.info("Initializing NutriAI RAG service...")
-    embedding_model = HuggingFaceEmbeddings(model_name=settings.EMBEDDING_MODEL)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    logger.info("Initializing NutriAI RAG service with embeddings on %s...", device)
+    embedding_model = HuggingFaceEmbeddings(
+        model_name=settings.EMBEDDING_MODEL,
+        model_kwargs={"device": device}
+    )
 
     # 1. Try Qdrant Vector Store
     if settings.QDRANT_URL:

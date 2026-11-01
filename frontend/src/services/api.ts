@@ -9,6 +9,7 @@ import {
   ExperimentSummary,
   LoRAResults,
   QuantizationResults,
+  QLoRAResults,
   RAGMetrics,
   MealIntelligenceSession,
   ExtractedMeal,
@@ -126,6 +127,11 @@ export const api = {
 
   async getQuantizationResults(): Promise<QuantizationResults> {
     const res = await apiClient.get<QuantizationResults>('/experiments/quantization');
+    return res.data;
+  },
+
+  async getQLoRAResults(): Promise<QLoRAResults> {
+    const res = await apiClient.get<QLoRAResults>('/experiments/qlora');
     return res.data;
   },
 
