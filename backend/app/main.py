@@ -13,6 +13,7 @@ from app.api.nutrition import router as nutrition_router
 from app.api.meals import router as meals_router
 from app.api.chat import router as chat_router
 from app.api.experiments import router as experiments_router
+from app.api.meal_intelligence import router as meal_intelligence_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -58,6 +59,7 @@ app.include_router(nutrition_router, prefix=settings.API_V1_PREFIX)
 app.include_router(meals_router, prefix=settings.API_V1_PREFIX)
 app.include_router(chat_router, prefix=settings.API_V1_PREFIX)
 app.include_router(experiments_router, prefix=settings.API_V1_PREFIX)
+app.include_router(meal_intelligence_router, prefix=settings.API_V1_PREFIX)
 
 @app.get("/")
 def root():

@@ -4,6 +4,8 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, HTTPException
 from app.schemas.chat import ChatRequest, ChatResponse, ChatSource
 from app.services.food_service import food_service
+from app.services.meal_parser_service import meal_parser_service
+from app.services.nutrition_calculator import analyze_consumed_items
 from app.services.rag_service import (
     answer_nutrition_question,
     is_query_nutrition_related,
@@ -91,12 +93,102 @@ def chat_endpoint(request: ChatRequest):
             fallback=True
         )
 
-    # 2. Check if user mentions vague meal without quantities (e.g., "I had 2 rotis and dal")
-    portion_vague_triggers = ["i ate", "i had", "my lunch was", "for dinner i had", "eating"]
+    # 2. Check if weight is mentioned in chat: directly calculate meal nutrition and show AI summary
+    has_weight = bool(re.search(r"\b\d+(?:\.\d+)?\s*(?:g|gm|gms|gram|grams|ml|kg)\b", q_lower))
+    portion_vague_triggers = ["i ate", "i had", "my lunch was", "for dinner i had", "eating", "had for", "dinner:", "lunch:", "breakfast:", "dinner was", "lunch was"]
     has_vague_meal = any(t in q_lower for t in portion_vague_triggers)
-    lacks_weight = not bool(re.search(r"\b\d+\s*(g|gram|grams|ml|kg)\b", q_lower))
 
-    if has_vague_meal and lacks_weight:
+    if has_weight:
+        try:
+            extraction = meal_parser_service.parse_meal_description(user_msg)
+            items_data = []
+            extracted_items_for_display = []
+            chat_sources = []
+
+            for meal in extraction.meals:
+                for it in meal.items:
+                    if it.matched_food_code and it.quantity_g and it.quantity_g > 0:
+                        food_doc = food_service.get_food_by_code(it.matched_food_code)
+                        if food_doc:
+                            items_data.append((food_doc, float(it.quantity_g)))
+                            extracted_items_for_display.append(it)
+                            nut = food_doc.get("nutrients", {})
+                            chat_sources.append(ChatSource(
+                                document_id=it.matched_food_code,
+                                title=f"Anuvaad: {food_doc.get('food_name')}",
+                                snippet=f"Per 100g: Energy {nut.get('energy_kcal', 'N/A')} kcal | Protein {nut.get('protein_g', 'N/A')}g | Carbs {nut.get('carb_g', 'N/A')}g | Fat {nut.get('fat_g', 'N/A')}g"
+                            ))
+
+            if items_data:
+                analysis = analyze_consumed_items(items_data)
+
+                # Format breakdown table
+                table_rows = []
+                total_weight = sum(it.quantity_g for it in extracted_items_for_display if it.quantity_g is not None)
+                total_kcal = analysis.total_nutrients.get("energy_kcal", 0.0) or 0.0
+                total_prot = analysis.total_nutrients.get("protein_g", 0.0) or 0.0
+                total_carb = analysis.total_nutrients.get("carb_g", 0.0) or 0.0
+                total_fat = analysis.total_nutrients.get("fat_g", 0.0) or 0.0
+                total_fib = analysis.total_nutrients.get("fibre_g", 0.0) or 0.0
+
+                for b in analysis.items_breakdown:
+                    nuts = b.nutrients
+                    table_rows.append(
+                        f"| **{b.food_name}** | {b.quantity_g}g | "
+                        f"{round(nuts.get('energy_kcal', 0.0) or 0.0, 1)} kcal | "
+                        f"{round(nuts.get('protein_g', 0.0) or 0.0, 1)}g | "
+                        f"{round(nuts.get('carb_g', 0.0) or 0.0, 1)}g | "
+                        f"{round(nuts.get('fat_g', 0.0) or 0.0, 1)}g | "
+                        f"{round(nuts.get('fibre_g', 0.0) or 0.0, 1)}g |"
+                    )
+
+                table_str = (
+                    "| Food Item | Portioned Weight | Energy (kcal) | Protein | Carbs | Fat | Fiber |\n"
+                    "| :--- | :---: | :---: | :---: | :---: | :---: | :---: |\n" +
+                    "\n".join(table_rows) + "\n" +
+                    f"| **Total Meal** | **{round(total_weight, 1)}g** | "
+                    f"**{round(total_kcal, 1)} kcal** | "
+                    f"**{round(total_prot, 1)}g** | "
+                    f"**{round(total_carb, 1)}g** | "
+                    f"**{round(total_fat, 1)}g** | "
+                    f"**{round(total_fib, 1)}g** |"
+                )
+
+                # Generate clean AI Summary without RAG myths or disclaimers
+                ratios = analysis.macronutrient_ratios.dict()
+                items_breakdown_dicts = [b.dict() for b in analysis.items_breakdown]
+                meal_types = [m.meal_type.title() for m in extraction.meals if m.meal_type != "unspecified"]
+                meal_name_str = " / ".join(set(meal_types)) if meal_types else "Your Meal"
+
+                ai_summary = meal_parser_service.generate_ai_meal_summary(
+                    meal_name=meal_name_str,
+                    items_breakdown=items_breakdown_dicts,
+                    total_nutrients=analysis.total_nutrients,
+                    macronutrient_ratios=ratios
+                )
+
+                final_text = (
+                    f"### 🍽️ Calculated Meal Nutrition (Anuvaad Database)\n\n"
+                    f"Here is the deterministic nutritional calculation based on the weights specified in your message:\n\n"
+                    f"{table_str}\n\n"
+                    f"---\n\n"
+                    f"{ai_summary}\n\n"
+                    f"💡 *Tip: You can also manage, adjust portions, and view interactive charts in the **AI Meal Intelligence** tab.*"
+                )
+
+                return ChatResponse(
+                    answer=final_text,
+                    sources=chat_sources,
+                    requires_clarification=False,
+                    intent="Meal Nutrition Calculation",
+                    retries=0,
+                    fallback=False
+                )
+        except Exception as exc:
+            logger.error("Direct meal calculation in chat failed: %s", exc, exc_info=True)
+
+    # 3. Check if user mentions vague meal without quantities (e.g., "I had 2 rotis and dal")
+    if has_vague_meal and not has_weight:
         return ChatResponse(
             answer=(
                 "I identified the foods in your meal. However, standard Indian preparations vary significantly in size "
@@ -109,10 +201,10 @@ def chat_endpoint(request: ChatRequest):
             fallback=False
         )
 
-    # 3. Check for Food Composition Search in MongoDB
+    # 4. Check for Food Composition Search in MongoDB
     matched_foods = detect_food_query(user_msg)
 
-    # 4. Handle Pure or Mixed RAG
+    # 5. Handle Pure or Mixed RAG
     model_provider = request.model_provider or "lora"
     rag_result = answer_nutrition_question(user_msg, model_provider=model_provider)
     rag_answer = rag_result.get("answer", "")

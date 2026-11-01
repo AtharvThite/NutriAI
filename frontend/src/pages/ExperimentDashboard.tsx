@@ -26,27 +26,30 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { api } from '../services/api';
-import { LoRAResults, QuantizationResults, RAGMetrics } from '../types';
+import { LoRAResults, QuantizationResults, RAGMetrics, MealIntelligenceEvalReport } from '../types';
 
 export const ExperimentDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'lora' | 'quant' | 'rag'>('lora');
   const [loraData, setLoraData] = useState<LoRAResults | null>(null);
   const [quantData, setQuantData] = useState<QuantizationResults | null>(null);
   const [ragData, setRagData] = useState<RAGMetrics | null>(null);
+  const [mealEvalData, setMealEvalData] = useState<MealIntelligenceEvalReport | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function loadExperiments() {
       try {
         setLoading(true);
-        const [lora, quant, rag] = await Promise.all([
+        const [lora, quant, rag, mealEval] = await Promise.all([
           api.getLoRAResults().catch(() => null),
           api.getQuantizationResults().catch(() => null),
-          api.getRAGMetrics().catch(() => null)
+          api.getRAGMetrics().catch(() => null),
+          api.getMealIntelligenceEvaluation().catch(() => null)
         ]);
         setLoraData(lora);
         setQuantData(quant);
         setRagData(rag);
+        setMealEvalData(mealEval);
       } finally {
         setLoading(false);
       }
@@ -210,6 +213,97 @@ export const ExperimentDashboard: React.FC = () => {
                   </table>
                 </div>
               </div>
+
+              {/* LoRA Meal Intelligence Extraction Benchmark */}
+              {mealEvalData && (
+                <div className="bg-white rounded-2xl border border-purple-200/80 shadow-xs overflow-hidden space-y-4">
+                  <div className="p-5 border-b border-purple-100 bg-gradient-to-r from-purple-50/70 via-white to-transparent flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="p-1.5 rounded-lg bg-purple-600 text-white shadow-xs">
+                          <Cpu className="w-4 h-4" />
+                        </span>
+                        <h4 className="text-base font-bold text-purple-950">
+                          AI Meal Intelligence: Base Model vs LoRA Benchmark
+                        </h4>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                          Empirical Evaluation
+                        </span>
+                      </div>
+                      <p className="text-xs text-purple-900/80 mt-1 max-w-2xl leading-relaxed">
+                        Evaluated across <strong>{mealEvalData.total_test_scenarios} test scenarios</strong> covering multi-meal inputs,
+                        informal Indian English, colloquial spellings, and missing portions.
+                        Base Model: <code>{mealEvalData.base_model_name}</code> vs Fine-Tuned: <code>{mealEvalData.lora_adapter}</code>.
+                      </p>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <div className="text-[11px] font-semibold text-slate-400 uppercase">Extraction Accuracy</div>
+                      <div className="text-xl font-extrabold text-emerald-600 mt-0.5">
+                        {mealEvalData.lora_model_metrics.food_identification_acc}%
+                      </div>
+                      <div className="text-[10px] text-slate-500">vs {mealEvalData.base_model_metrics.food_identification_acc}% Base</div>
+                    </div>
+                  </div>
+
+                  {/* 7-Criteria Comparison Table */}
+                  <div className="overflow-x-auto px-4 pb-2">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50/70 border-b border-slate-100 text-slate-400 uppercase font-semibold">
+                        <tr>
+                          <th className="py-3 px-4">Evaluation Metric</th>
+                          <th className="py-3 px-3 text-center">Base Model</th>
+                          <th className="py-3 px-3 text-center">LoRA Model</th>
+                          <th className="py-3 px-3 text-center">Improvement</th>
+                          <th className="py-3 px-4">Behavioral Impact</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {mealEvalData.comparison_table.map((row, idx) => (
+                          <tr key={idx} className="hover:bg-slate-50/50">
+                            <td className="py-3 px-4 font-semibold text-slate-800">{row.metric}</td>
+                            <td className="py-3 px-3 text-center font-mono text-slate-500">{row.base_model}</td>
+                            <td className="py-3 px-3 text-center font-mono font-bold text-purple-700 bg-purple-50/40 rounded-lg">
+                              {row.lora_model}
+                            </td>
+                            <td className="py-3 px-3 text-center font-semibold text-emerald-600">
+                              {row.delta}
+                            </td>
+                            <td className="py-3 px-4 text-slate-600 text-[11px] leading-relaxed">
+                              {row.description}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Qualitative Output Contrast */}
+                  <div className="p-4 border-t border-purple-100/80 bg-purple-50/30 space-y-3">
+                    <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Qualitative Behavior Contrast
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {mealEvalData.sample_evaluations.map((sample, sIdx) => (
+                        <div key={sIdx} className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-2 text-xs">
+                          <div className="font-semibold text-slate-800 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-purple-600" />
+                            <span>Prompt: "{sample.prompt}"</span>
+                          </div>
+                          <div className="space-y-1.5 pt-1 text-[11px]">
+                            <div className="p-2 rounded-lg bg-rose-50 border border-rose-200/60 text-rose-900">
+                              <span className="font-bold">Base Model (Zero-Shot):</span> {sample.base_model_output}
+                            </div>
+                            <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200/60 text-emerald-900">
+                              <span className="font-bold">LoRA Fine-Tuned:</span> {sample.lora_model_output}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

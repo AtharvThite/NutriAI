@@ -4,6 +4,7 @@ import { Sidebar } from './components/layout/Sidebar';
 import { Navbar } from './components/layout/Navbar';
 import { Dashboard } from './pages/Dashboard';
 import { NutritionChecker } from './pages/NutritionChecker';
+import { AIMealIntelligence } from './pages/AIMealIntelligence';
 import { NutritionChat } from './pages/NutritionChat';
 import { ExperimentDashboard } from './pages/ExperimentDashboard';
 import { api } from './services/api';
@@ -26,6 +27,11 @@ const PageLayout: React.FC<{ children: React.ReactNode; health: SystemHealth | n
         return {
           title: 'Nutrition Checker',
           subtitle: 'Deterministic Indian food macro & micronutrient calculation'
+        };
+      case '/meal-intelligence':
+        return {
+          title: 'AI Meal Intelligence',
+          subtitle: 'LoRA fine-tuned Indian meal parsing with verified Anuvaad food composition'
         };
       case '/chat':
         return {
@@ -81,6 +87,7 @@ export const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/nutrition-checker" element={<NutritionChecker />} />
+          <Route path="/meal-intelligence" element={<AIMealIntelligence />} />
           <Route path="/chat" element={<NutritionChat />} />
           <Route path="/experiments" element={<ExperimentDashboard />} />
           <Route path="*" element={<Dashboard />} />

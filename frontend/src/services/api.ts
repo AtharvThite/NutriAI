@@ -9,7 +9,11 @@ import {
   ExperimentSummary,
   LoRAResults,
   QuantizationResults,
-  RAGMetrics
+  RAGMetrics,
+  MealIntelligenceSession,
+  ExtractedMeal,
+  MealMatchCandidate,
+  MealIntelligenceEvalReport
 } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
@@ -127,6 +131,45 @@ export const api = {
 
   async getRAGMetrics(): Promise<RAGMetrics> {
     const res = await apiClient.get<RAGMetrics>('/experiments/rag');
+    return res.data;
+  },
+
+  // AI Meal Intelligence
+  async parseMeal(message: string): Promise<MealIntelligenceSession> {
+    const res = await apiClient.post<MealIntelligenceSession>('/meal-intelligence/parse', { message });
+    return res.data;
+  },
+
+  async matchFoods(query: string, limit = 5): Promise<MealMatchCandidate[]> {
+    const res = await apiClient.post<{ query: string; matches: MealMatchCandidate[] }>('/meal-intelligence/match-foods', {
+      query,
+      limit
+    });
+    return res.data.matches;
+  },
+
+  async getMealSession(sessionId: string): Promise<MealIntelligenceSession> {
+    const res = await apiClient.get<MealIntelligenceSession>(`/meal-intelligence/${sessionId}`);
+    return res.data;
+  },
+
+  async updateMealSession(sessionId: string, meals: ExtractedMeal[]): Promise<MealIntelligenceSession> {
+    const res = await apiClient.put<MealIntelligenceSession>(`/meal-intelligence/${sessionId}`, { meals });
+    return res.data;
+  },
+
+  async calculateMealNutrition(sessionId: string): Promise<MealIntelligenceSession> {
+    const res = await apiClient.post<MealIntelligenceSession>(`/meal-intelligence/${sessionId}/calculate`);
+    return res.data;
+  },
+
+  async saveConfirmedMeal(sessionId: string, mealName?: string): Promise<Meal> {
+    const res = await apiClient.post<Meal>(`/meal-intelligence/${sessionId}/save`, { meal_name: mealName });
+    return res.data;
+  },
+
+  async getMealIntelligenceEvaluation(): Promise<MealIntelligenceEvalReport> {
+    const res = await apiClient.get<MealIntelligenceEvalReport>('/meal-intelligence/evaluation/report');
     return res.data;
   }
 };

@@ -62,14 +62,20 @@ class MongoDBManager:
 db_manager = MongoDBManager()
 
 def get_database() -> Optional[Database]:
+    if db_manager.db is None:
+        db_manager.connect()
     return db_manager.db
 
 def get_foods_collection() -> Optional[Collection]:
+    if db_manager.db is None:
+        db_manager.connect()
     if db_manager.db is not None:
         return db_manager.db["foods"]
     return None
 
 def get_meals_collection() -> Optional[Collection]:
+    if db_manager.db is None:
+        db_manager.connect()
     if db_manager.db is not None:
         return db_manager.db["meals"]
     return None

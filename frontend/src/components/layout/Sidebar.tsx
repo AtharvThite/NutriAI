@@ -7,7 +7,8 @@ import {
   FlaskConical,
   Sparkles,
   Database,
-  Leaf
+  Leaf,
+  ChefHat
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -30,6 +31,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ systemHealth }) => {
       label: 'Nutrition Checker',
       icon: UtensilsCrossed,
       description: 'Indian food meal builder'
+    },
+    {
+      to: '/meal-intelligence',
+      label: 'AI Meal Intelligence',
+      icon: ChefHat,
+      description: 'LoRA natural language meal parser'
     },
     {
       to: '/chat',

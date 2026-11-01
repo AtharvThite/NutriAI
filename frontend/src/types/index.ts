@@ -155,3 +155,106 @@ export interface RAGMetrics {
     latency_ms: number;
   }>;
 }
+
+// AI Meal Intelligence Types
+export interface MealMatchCandidate {
+  food_code: string;
+  food_name: string;
+  nutrition_basis: string;
+  energy_kcal?: number | null;
+  protein_g?: number | null;
+  carb_g?: number | null;
+  fat_g?: number | null;
+  fibre_g?: number | null;
+  servings_unit?: string | null;
+  match_score?: number | null;
+}
+
+export interface ExtractedFoodItem {
+  food_name: string;
+  quantity?: number | null;
+  unit?: string | null;
+  quantity_g?: number | null;
+  confidence?: number | null;
+  matched_food_code?: string | null;
+  matched_food_name?: string | null;
+  match_status: 'matched' | 'ambiguous' | 'not_found' | 'unmatched';
+  match_candidates: MealMatchCandidate[];
+  portion_known: boolean;
+}
+
+export interface ExtractedMeal {
+  meal_type: string;
+  items: ExtractedFoodItem[];
+}
+
+export interface ClarificationQuestion {
+  food_name: string;
+  question: string;
+  suggested_weight_g?: number | null;
+  answered: boolean;
+}
+
+export interface RAGSourceRef {
+  document_id: string;
+  title: string;
+  snippet?: string | null;
+}
+
+export interface MealIntelligenceSession {
+  session_id: string;
+  raw_input: string;
+  status: 'clarification_required' | 'ready_for_calculation' | 'calculated' | 'saved';
+  model_used: string;
+  meals: ExtractedMeal[];
+  requires_clarification: boolean;
+  clarification_questions: ClarificationQuestion[];
+  nutrition_analysis?: NutritionAnalysis | null;
+  ai_summary?: string | null;
+  rag_sources: RAGSourceRef[];
+  saved_meal_id?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MealIntelligenceEvalReport {
+  status: string;
+  base_model_name: string;
+  lora_adapter: string;
+  total_test_scenarios: number;
+  base_model_metrics: {
+    model: string;
+    food_identification_acc: number;
+    quantity_extraction_acc: number;
+    unit_extraction_acc: number;
+    meal_type_acc: number;
+    clarification_detection_acc: number;
+    json_validity_rate: number;
+    unsupported_assumptions_rate: number;
+    avg_latency_ms: number;
+  };
+  lora_model_metrics: {
+    model: string;
+    food_identification_acc: number;
+    quantity_extraction_acc: number;
+    unit_extraction_acc: number;
+    meal_type_acc: number;
+    clarification_detection_acc: number;
+    json_validity_rate: number;
+    unsupported_assumptions_rate: number;
+    avg_latency_ms: number;
+  };
+  comparison_table: Array<{
+    metric: string;
+    base_model: string;
+    lora_model: string;
+    delta: string;
+    description: string;
+  }>;
+  sample_evaluations: Array<{
+    prompt: string;
+    base_model_output: string;
+    lora_model_output: string;
+  }>;
+  timestamp: string;
+}
