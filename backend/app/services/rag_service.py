@@ -296,7 +296,7 @@ NUTRITION GUIDANCE:"""
         try:
             from app.services.llm_service import generate_with_local_lora
             logger.info("Drafting answer using fine-tuned local LoRA model (Qwen2.5-0.5B + Adapter)...")
-            draft = generate_with_local_lora(f"Context:\n{context}\n\nQuestion: {question}")
+            draft = generate_with_local_lora(f"Context:\n{context}\n\nQuestion: {question}", max_new_tokens=512)
         except Exception as exc:
             logger.warning("Local LoRA inference failed (%s). Falling back to Groq cloud API.", exc)
             try:

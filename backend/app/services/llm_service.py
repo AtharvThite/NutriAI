@@ -83,7 +83,7 @@ def load_local_lora_model():
     logger.info("Local Fine-Tuned LoRA Model is ready for GPU/CPU inference on %s.", device)
     return _local_model, _local_tokenizer
 
-def generate_with_local_lora(prompt: str, max_new_tokens: int = 150) -> str:
+def generate_with_local_lora(prompt: str, max_new_tokens: int = 512) -> str:
     """Generates nutrition text using the locally fine-tuned LoRA adapter."""
     model, tokenizer = load_local_lora_model()
     if model is None or tokenizer is None:
