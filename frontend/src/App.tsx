@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Sidebar } from './components/layout/Sidebar';
 import { Navbar } from './components/layout/Navbar';
+import { LandingPage } from './pages/LandingPage';
+import { AuthPage } from './pages/AuthPage';
 import { Dashboard } from './pages/Dashboard';
 import { NutritionChecker } from './pages/NutritionChecker';
 import { AIMealIntelligence } from './pages/AIMealIntelligence';
 import { NutritionChat } from './pages/NutritionChat';
 import { ExperimentDashboard } from './pages/ExperimentDashboard';
+import { AuthProvider } from './context/AuthContext';
 import { api } from './services/api';
 import { SystemHealth } from './types';
 
@@ -18,7 +21,7 @@ const PageLayout: React.FC<{ children: React.ReactNode; health: SystemHealth | n
 
   const getPageInfo = () => {
     switch (location.pathname) {
-      case '/':
+      case '/dashboard':
         return {
           title: 'System Dashboard',
           subtitle: 'Comprehensive overview of NutriAI health, food records, and models'
@@ -82,18 +85,61 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <BrowserRouter>
-      <PageLayout health={health}>
+    <AuthProvider>
+      <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/nutrition-checker" element={<NutritionChecker />} />
-          <Route path="/meal-intelligence" element={<AIMealIntelligence />} />
-          <Route path="/chat" element={<NutritionChat />} />
-          <Route path="/experiments" element={<ExperimentDashboard />} />
-          <Route path="*" element={<Dashboard />} />
+          {/* Public Landing & Auth Pages (Standalone Layout) */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<AuthPage initialMode="signin" />} />
+          <Route path="/signup" element={<AuthPage initialMode="signup" />} />
+
+          {/* Application App Pages (Sidebar + Navbar Layout) */}
+          <Route
+            path="/dashboard"
+            element={
+              <PageLayout health={health}>
+                <Dashboard />
+              </PageLayout>
+            }
+          />
+          <Route
+            path="/nutrition-checker"
+            element={
+              <PageLayout health={health}>
+                <NutritionChecker />
+              </PageLayout>
+            }
+          />
+          <Route
+            path="/meal-intelligence"
+            element={
+              <PageLayout health={health}>
+                <AIMealIntelligence />
+              </PageLayout>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <PageLayout health={health}>
+                <NutritionChat />
+              </PageLayout>
+            }
+          />
+          <Route
+            path="/experiments"
+            element={
+              <PageLayout health={health}>
+                <ExperimentDashboard />
+              </PageLayout>
+            }
+          />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </PageLayout>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   );
 };
 

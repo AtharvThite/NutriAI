@@ -12,6 +12,11 @@ class Settings(BaseSettings):
     MONGODB_URI: str = "mongodb://localhost:27017"
     MONGODB_DATABASE: str = "nutriai"
 
+    # JWT Authentication
+    JWT_SECRET_KEY: str = "nutriai-super-secret-jwt-key-2026-production"
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+
     # Qdrant Vector Store
     QDRANT_URL: str = "http://localhost:6333"
     QDRANT_API_KEY: str = ""

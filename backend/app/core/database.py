@@ -40,6 +40,10 @@ class MongoDBManager:
                 meals_col = self.db["meals"]
                 meals_col.create_index("meal_id", unique=True)
                 meals_col.create_index("created_at")
+
+                users_col = self.db["users"]
+                users_col.create_index("email", unique=True)
+                users_col.create_index("user_id", unique=True)
             except Exception as e:
                 logger.error("Error creating MongoDB indexes: %s", e)
 
@@ -78,4 +82,11 @@ def get_meals_collection() -> Optional[Collection]:
         db_manager.connect()
     if db_manager.db is not None:
         return db_manager.db["meals"]
+    return None
+
+def get_users_collection() -> Optional[Collection]:
+    if db_manager.db is None:
+        db_manager.connect()
+    if db_manager.db is not None:
+        return db_manager.db["users"]
     return None

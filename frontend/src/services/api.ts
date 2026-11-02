@@ -14,7 +14,11 @@ import {
   MealIntelligenceSession,
   ExtractedMeal,
   MealMatchCandidate,
-  MealIntelligenceEvalReport
+  MealIntelligenceEvalReport,
+  User,
+  AuthResponse,
+  LoginCredentials,
+  SignupCredentials
 } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
@@ -25,6 +29,15 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+});
+
+// Automatically inject JWT token into outgoing requests
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('nutriai_token');
+  if (token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export const api = {
@@ -176,6 +189,36 @@ export const api = {
 
   async getMealIntelligenceEvaluation(): Promise<MealIntelligenceEvalReport> {
     const res = await apiClient.get<MealIntelligenceEvalReport>('/meal-intelligence/evaluation/report');
+    return res.data;
+  },
+
+  // Authentication
+  async signup(credentials: SignupCredentials): Promise<AuthResponse> {
+    const res = await apiClient.post<AuthResponse>('/auth/signup', credentials);
+    return res.data;
+  },
+
+  async login(credentials: LoginCredentials): Promise<AuthResponse> {
+    const res = await apiClient.post<AuthResponse>('/auth/login', credentials);
+    return res.data;
+  },
+
+  async getMe(): Promise<User> {
+    const res = await apiClient.get<User>('/auth/me');
+    return res.data;
+  },
+
+  async logout(): Promise<{ success: boolean; message: string }> {
+    try {
+      const res = await apiClient.post('/auth/logout');
+      return res.data;
+    } catch {
+      return { success: true, message: 'Logged out' };
+    }
+  },
+
+  async updateProfile(updates: Partial<User>): Promise<User> {
+    const res = await apiClient.put<User>('/auth/profile', updates);
     return res.data;
   }
 };

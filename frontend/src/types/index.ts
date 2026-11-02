@@ -289,3 +289,32 @@ export interface MealIntelligenceEvalReport {
   }>;
   timestamp: string;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  full_name: string;
+  dietary_preference: string;
+  daily_calorie_target: number;
+  created_at?: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+  message?: string;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface SignupCredentials {
+  email: string;
+  password: string;
+  full_name: string;
+  dietary_preference?: string;
+  daily_calorie_target?: number;
+}
