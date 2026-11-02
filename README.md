@@ -7,67 +7,102 @@
 [![Qdrant](https://img.shields.io/badge/Qdrant-Cloud%20%7C%20Vector-DC2626.svg)](https://qdrant.tech)
 [![PyTorch](https://img.shields.io/badge/PyTorch-PEFT%20%7C%20LoRA-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 
-NutriAI is a comprehensive full-stack AI/ML health-tech application designed for Indian food nutrition assessment, interactive meal building, and conversational dietary guidance. It incorporates deterministic numerical calculations based on verified laboratory data alongside cutting-edge LLM techniques: **Retrieval-Augmented Generation (RAG)**, **LoRA Fine-Tuning**, and **4-bit NF4 Quantization (QLoRA)**.
+NutriAI is a comprehensive full-stack AI/ML health-tech application designed for Indian food nutrition assessment, interactive meal building, conversational dietary guidance, and **Smart Food Alternatives discovery**. It incorporates deterministic numerical calculations based on verified laboratory data alongside cutting-edge LLM techniques: **Retrieval-Augmented Generation (RAG)**, **LoRA Fine-Tuning**, and **4-bit NF4 Quantization (QLoRA)**.
 
 ---
 
 ## 1. System Architecture
 
 ```
-                  USER
-                    |
-                    v
-             REACT FRONTEND
-       (Vite + TypeScript + Tailwind)
-                    |
-                  Axios (REST)
-                    |
-                    v
-             FASTAPI BACKEND
-                    |
-        +-----------+------------+
-        |           |            |
-        v           v            v
-     MongoDB      Qdrant       LLM (Groq / Qwen)
-  (1,014 Foods)  (Vector RAG)    |
-        |           |       +----+----+
-        v           v       |         |
-   Food Records    RAG     LoRA     QLoRA
-        |
-        v
- Deterministic Calculator
- [N_consumed = (N_per100g * W) / 100]
+                                  USER
+                                    │
+                                    ▼
+                             REACT FRONTEND
+                     (Vite + TypeScript + Tailwind)
+                                    │
+                               Axios (REST)
+                                    │
+                                    ▼
+                             FASTAPI BACKEND
+                                    │
+                 ┌──────────────────┼──────────────────┐
+                 ▼                  ▼                  ▼
+              MongoDB             Qdrant            LLM / PEFT
+           (1,014 Foods)       (Vector RAG)       (Qwen2.5-0.5B)
+                 │                  │                  │
+                 ▼                  ▼            ┌─────┴─────┐
+           Food Records            RAG           │           │
+                 │                  │          LoRA        QLoRA
+                 ▼                  │       (Intent)    (Quantized)
+      Deterministic Calculator      │
+      [N = (N_per100g * W) / 100]   │
+                 │                  │
+                 └─────────┬────────┘
+                           ▼
+             Smart Food Alternatives Engine
+             • LoRA Natural Language Intent Parsing
+             • Deterministic Multi-Objective Ranking
+             • Side-by-Side Macro/Micro Deltas
+             • Evidence-Backed RAG Clinical Explanations
+             • Persistent MongoDB Saved Comparisons
 ```
 
 ### Key Architectural Tenets
-1. **Deterministic Arithmetic:** LLMs are never used for nutrient calculations. All calorie and nutrient calculations use exact laboratory data from the Anuvaad Indian Food Composition Database.
-2. **Strict RAG Grounding:** The conversational assistant queries 20 educational TXT documents across 104 vector chunks. If evidence is lacking, the pipeline triggers query rewriting and falls back safely (`INSUFFICIENT_CONTEXT`) rather than hallucinating dietary advice.
-3. **Decoupled Offline ML:** LoRA training and quantization benchmarking scripts run independently from HTTP request paths to ensure low latency and high availability.
+1. **Deterministic Arithmetic:** LLMs are never used for nutrient calculations. All calorie and nutrient calculations use exact laboratory data from the Anuvaad Indian Food Composition Database ($N_{\text{consumed}} = (N_{\text{per } 100\text{g}} \times W) / 100$).
+2. **Strict RAG Grounding:** The conversational and alternative explanation systems query 20 educational documents in Qdrant across 104 vector chunks. If evidence is lacking, the system clearly states that evidence-based citations are unavailable rather than hallucinating dietary advice.
+3. **Decoupled Offline ML:** LoRA training, quantization benchmarking, and evaluation scripts run independently from HTTP request paths to guarantee fast responses.
+4. **Targeted Indexed Database Queries:** Nutritional alternative searches use compound B-tree indexes (`energy_kcal`, `protein_g`, `carb_g`, `fibre_g`) and dietary pre-filters to query targeted subsets (down from full 1,014 collection scans).
 
 ---
 
-## 2. Adaptation of Reference Experiment Code
+## 2. Core Features
 
-NutriAI directly refactors and adapts three baseline experiment implementations:
+### A. Smart Food Alternatives
+- **Natural Language Intent Parsing (LoRA):** Converts conversational queries (e.g. *"Find a higher protein veg alternative for chicken"*) into structured targets: baseline food, optimization objective, dietary preferences, and comparison criteria.
+- **Transparent Multi-Objective Recommendation:**
+  - `similar`: Minimizes normalized weighted Euclidean distance with continuous exponential decay ($99.0 \times e^{-1.5 \times \text{dist}}$).
+  - `higher_protein`: Identifies alternatives with superior protein density (supports plant-based protein swaps for meat).
+  - `lower_calorie`: Discovers calorie-reduced alternatives without penalizing essential macronutrients.
+  - `higher_fibre`: Prioritizes dietary fibre density for digestive satiety and gut health.
+  - `lower_carb`: Surfaces lower carbohydrate options for postprandial glycemic moderation.
+- **Dietary & Culinary Classification:** Deterministically classifies Anuvaad foods into *Vegetarian*, *Vegan*, or *Non-Vegetarian*, as well as 8 standardized culinary groups.
+- **Side-by-Side Nutrient Comparison & Recharts Visualization:** Displays gram-scaled macro and micronutrient deltas with favorable/unfavorable highlighting.
+- **Grounded RAG Clinical Explanations:** Explains the physiological mechanisms of nutrient shifts with collapsible Qdrant knowledge source badges.
+- **Saved Comparisons:** Persists comparisons in MongoDB with revisit, review, and delete actions.
+
+### B. Nutrition Checker & Meal Intelligence
+- Substring and autocomplete search across 1,014 Anuvaad Indian food records.
+- Deterministic analysis of 39 macro and micronutrients based on input gram weights.
+- Visual breakdown of Energy, Protein, Carbohydrates, Fat, and Dietary Fibre.
+
+### C. Conversational RAG Dietary Assistant
+- Multi-intent routing across nutritional queries, meal planning, and health topics.
+- Grounded citations linking answers to verified knowledge base documents.
+
+---
+
+## 3. Adaptation of Reference Experiment Code
+
+NutriAI refactors and adapts baseline experiment implementations:
 
 | Original Source | NutriAI Module | Adaptations |
 | :--- | :--- | :--- |
-| **`support_rag.py`** (Exp 6/7 FAQ RAG) | `backend/app/services/rag_service.py` & `backend/ml/rag/ingest.py` | • Replaced customer support FAQ text with **20 NutriAI TXT documents**.<br>• Preserved document IDs, titles, and section metadata.<br>• Adapted intent classification to nutrition categories.<br>• Retained LangGraph state graph (`classify_intent` &rarr; `retrieve` &rarr; `draft_answer` &rarr; `review_answer` &rarr; `rewrite_query` &rarr; `fallback`).<br>• Initialized embeddings and retriever once on FastAPI lifespan startup.<br>• Added Qdrant Cloud cluster support and FAISS local fallback. |
-| **`2023300247_LLM_Exp2.ipynb`** (LoRA) | `backend/ml/finetuning/train_lora.py` & `evaluate_lora.py` | • Replaced RecipeNLG with `nutrition_train.jsonl` and `nutrition_validation.jsonl`.<br>• Preserved `LoraConfig` ($r=4, 8, 16$, $\alpha=16, 32$, `q_proj, v_proj`).<br>• Converted notebook cells into modular scripts.<br>• Exported adapter weights to `backend/artifacts/lora_adapter/`.<br>• Logged real training loss, parameters, and time to `lora_results.json`. |
+| **`support_rag.py`** (Exp 6/7 FAQ RAG) | `backend/app/services/rag_service.py` & `backend/app/services/alternative_explanation_service.py` | • Replaced customer support FAQ text with **20 NutriAI TXT documents**.<br>• Preserved document IDs, titles, and section metadata.<br>• Adapted intent classification to nutrition categories.<br>• Retained LangGraph state graph (`classify_intent` &rarr; `retrieve` &rarr; `draft_answer` &rarr; `review_answer` &rarr; `rewrite_query` &rarr; `fallback`).<br>• Initialized embeddings and retriever once on FastAPI lifespan startup.<br>• Added Qdrant Cloud cluster support with FAISS local fallback. |
+| **`2023300247_LLM_Exp2.ipynb`** (LoRA) | `backend/ml/finetuning/train_lora.py` & `backend/app/services/food_alternative_service.py` | • Replaced RecipeNLG with `nutrition_train.jsonl` and `nutrition_validation.jsonl`.<br>• Preserved `LoraConfig` ($r=4, 8, 16$, $\alpha=16, 32$, `q_proj, v_proj`).<br>• Applied LoRA adapter for zero-shot natural language intent parsing.<br>• Exported adapter weights to `backend/artifacts/lora_adapter/`.<br>• Logged verified training loss and parameters to `lora_results.json`. |
 | **`2023300247_LLM_Exp_3.ipynb`** (Quant & QLoRA) | `backend/ml/quantization/benchmark_quantization.py` & `backend/ml/finetuning/train_qlora.py` | • Replaced RecipeNLG with NutriAI instruction dataset.<br>• Implemented 4-bit NF4 double quantization and INT8 evaluation.<br>• Benchmarked model parameter footprint, generation latency, and tokens/sec throughput.<br>• Saved verified benchmarks to `quantization_results.json` and `qlora_results.json`. |
 
 ---
 
-## 3. Verified Datasets & Knowledge Base
+## 4. Verified Datasets & Knowledge Base
 
 - **Structured Nutrition Data:** `backend/datasets/structured/Anuvaad_INDB_2024.11.xlsx` (1,014 verified Indian foods, 39 nutrients per 100g, imported into MongoDB collection `foods`).
 - **Knowledge Base:** 20 standalone UTF-8 `.txt` documents in `backend/knowledge_base/` covering Macronutrients, Micronutrients, Balanced Diets, Traditional Indian Cooking, and Limitations.
 - **LoRA Datasets:** `nutrition_train.jsonl`, `nutrition_validation.jsonl`, `nutrition_test.jsonl` in `backend/datasets/finetuning/`.
-- **Evaluation Datasets:** `rag_eval.jsonl` (100 benchmark queries), `model_eval.jsonl`, `rag_query_expansion.jsonl` in `backend/datasets/evaluation/`.
+- **Evaluation Datasets:** `rag_eval.jsonl` (100 benchmark queries), `model_eval.jsonl`, `rag_query_expansion.jsonl`, and `food_alternatives_eval.json` in `backend/artifacts/experiment_results/`.
 
 ---
 
-## 4. Setup & Running Instructions
+## 5. Setup & Running Instructions
 
 ### Prerequisites
 - Python 3.12+
@@ -94,6 +129,9 @@ python ml/rag/ingest.py
 # Run RAG benchmark evaluation
 python ml/rag/evaluate_rag.py
 
+# Evaluate Smart Food Alternatives benchmarks
+python scripts/evaluate_alternatives.py
+
 # Start FastAPI development server
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
@@ -113,12 +151,12 @@ Frontend application is accessible at: `http://localhost:5173`
 
 ---
 
-## 5. Qdrant Configuration (Local, Container, or Cloud)
+## 6. Qdrant Configuration (Local, Container, or Cloud)
 
 NutriAI supports both local vector storage and Qdrant Cloud clusters.
 
 ### Using Qdrant Cloud Cluster Credentials
-To connect NutriAI to your remote Qdrant Cloud cluster, simply update `backend/.env`:
+To connect NutriAI to your remote Qdrant Cloud cluster, update `backend/.env`:
 ```env
 QDRANT_URL=https://your-cluster-id.us-east4-0.gcp.cloud.qdrant.io:6333
 QDRANT_API_KEY=your_qdrant_api_key_here
@@ -131,8 +169,9 @@ If `QDRANT_URL` is omitted or uncontactable, NutriAI seamlessly utilizes the loc
 
 ---
 
-## 6. API Reference
+## 7. API Reference
 
+### Core Nutrition & Meal Endpoints
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/api/health` | System health check (MongoDB, RAG readiness, compute hardware) |
@@ -146,27 +185,56 @@ If `QDRANT_URL` is omitted or uncontactable, NutriAI seamlessly utilizes the loc
 | `POST` | `/api/chat` | AI nutrition assistant with multi-intent routing and RAG source attribution |
 | `GET` | `/api/rag/status` | RAG vector store indexing and chunking status |
 | `GET` | `/api/model/status` | Base model and adapter availability |
+
+### Smart Food Alternatives Endpoints
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/alternatives/search?q={query}` | Autocomplete search for baseline Indian food records |
+| `POST` | `/api/alternatives/recommend` | Ranked alternatives based on objective, diet, and nutrient criteria |
+| `POST` | `/api/alternatives/compare` | Multi-food side-by-side nutrient profile comparison on common gram basis |
+| `POST` | `/api/alternatives/explain` | Synthesize RAG-grounded clinical explanation citing Qdrant sources |
+| `POST` | `/api/alternatives/parse-request` | LoRA intent parsing converting natural language queries into structured parameters |
+| `GET` | `/api/alternatives/saved` | Retrieve user's saved food comparisons history |
+| `POST` | `/api/alternatives/saved` | Persist a food alternative comparison to MongoDB |
+| `DELETE`| `/api/alternatives/saved/{id}` | Remove a saved comparison record |
+
+### Experiment Benchmarks Endpoints
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
 | `GET` | `/api/experiments/summary` | Overall status summary across all ML experiments |
 | `GET` | `/api/experiments/lora` | Real LoRA fine-tuning metrics ($r=4, 8, 16$) |
 | `GET` | `/api/experiments/quantization`| Benchmark results for FP32 vs INT8 vs 4-bit NF4 |
 | `GET` | `/api/experiments/rag` | Precision@k, Recall@k, and MRR retrieval metrics |
+| `GET` | `/api/experiments/alternatives`| Benchmark metrics for Smart Food Alternatives pipeline |
 
 ---
 
-## 7. Experiment Benchmark Results
+## 8. Experiment Benchmark Results
 
-### A. RAG Retrieval Evaluation (across 100 benchmark queries)
+### A. Smart Food Alternatives Evaluation
+- **LoRA Intent Objective Accuracy:** `100.0%`
+- **LoRA Dietary Preference Accuracy:** `100.0%`
+- **LoRA Food Extraction Accuracy:** `100.0%`
+- **LoRA Inference Latency:** `~900 ms`
+- **RAG Knowledge Retrieval MRR:** `0.767`
+- **RAG Retrieval Latency:** `~279 ms`
+- **Deterministic Numerical Scoring Latency:** `84.4 ms`
+- **Targeted MongoDB Candidate Scan:** Filtered down to ~77–123 candidates using nutrient B-tree indexes (avoiding 1,014 full collection scans).
+
+### B. RAG Retrieval Evaluation (across 100 benchmark queries)
+- **Vector Store:** FAISS index / Qdrant Cloud (`nutriai_knowledge`, 20 documents, 104 chunks)
 - **Embedding Model:** `sentence-transformers/all-MiniLM-L6-v2`
 - **Mean Reciprocal Rank (MRR):** `0.8192`
-- **Precision@4:** `63.7%`
-- **Average Retrieval Latency:** `6.42 ms`
+- **Precision@4:** `63.75%`
+- **Recall@4:** `2.0867`
+- **Average Retrieval Latency:** `373.99 ms`
 
-### B. 4-bit NF4 Quantization Comparison (Qwen2.5-0.5B-Instruct)
-- **FP32 Baseline:** 1,885 MB memory footprint, 15.0 tokens/sec
-- **8-bit INT8:** 980 MB memory footprint, 45.2 tokens/sec
-- **4-bit NF4 Double Quant:** 584 MB memory footprint (**69.0% reduction**), 62.8 tokens/sec
+### C. 4-bit NF4 Quantization Comparison (Qwen2.5-0.5B-Instruct on RTX 3050 Laptop GPU)
+- **FP16 Baseline:** 942.29 MB model size, 950.17 MB memory allocated, 33.36 tokens/sec, latency 1.799s
+- **8-bit INT8:** 601.04 MB model size, 602.23 MB memory allocated, 5.43 tokens/sec, latency 11.054s
+- **4-bit NF4 Double Quant:** 430.42 MB model size, 436.29 MB memory allocated (**54.3% memory reduction**), 31.03 tokens/sec, latency 1.934s
 
-### C. LoRA Fine-Tuning Performance
-- **Run A ($r=4$):** 1,048,576 trainable parameters (0.21%), Loss: 1.542
-- **Run B ($r=8$):** 2,097,152 trainable parameters (0.42%), Loss: 1.385
-- **Run C ($r=16$):** 4,194,304 trainable parameters (0.84%), Loss: 1.321
+### D. LoRA Fine-Tuning Performance (Qwen2.5-0.5B-Instruct)
+- **Run A ($r=4, \alpha=16$):** 270,336 trainable parameters (0.0547%), Training Loss: 3.2041, Training Time: 33.07s
+- **Run B ($r=8, \alpha=16$):** 540,672 trainable parameters (0.1093%), Training Loss: 3.2121, Training Time: 32.65s
+- **Meal Intelligence Benchmark:** LoRA Food Identification Accuracy: **95.0%** (vs Base Zero-Shot: **72.5%**, $+22.5\%$ improvement)
