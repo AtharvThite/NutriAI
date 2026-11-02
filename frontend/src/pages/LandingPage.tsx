@@ -6,6 +6,7 @@ import {
   Brain,
   MessageSquare,
   ArrowRight,
+  ArrowLeftRight,
   Sparkles,
   ShieldCheck,
   LogOut,
@@ -55,7 +56,7 @@ export const LandingPage: React.FC = () => {
             <a href="#features" className="hover:text-emerald-600 transition-colors">Features</a>
             <a href="#demo" className="hover:text-emerald-600 transition-colors">Live Demo</a>
             <a href="#how-it-works" className="hover:text-emerald-600 transition-colors">How It Works</a>
-            <Link to="/nutrition-checker" className="hover:text-emerald-600 transition-colors">Nutrition Checker</Link>
+            <Link to="/alternatives" className="hover:text-emerald-600 transition-colors">Smart Alternatives</Link>
             <Link to="/experiments" className="hover:text-emerald-600 transition-colors">Benchmarks</Link>
           </nav>
 
@@ -296,45 +297,67 @@ export const LandingPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Card 1 */}
-          <div className="p-8 rounded-3xl bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-600/5 transition-all group">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform">
-              <Utensils className="w-6 h-6" />
+          <div className="p-7 rounded-3xl bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-600/5 transition-all group flex flex-col justify-between">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-5 group-hover:scale-110 transition-transform">
+                <Utensils className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">Macro Calculator</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Build Indian meals with gram-level precision. Get instant energy, protein, carbohydrate, fat, and dietary fibre metrics with 0% AI estimation error.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Deterministic Macro Calculator</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Build Indian meals with gram-level precision. Get instant energy, protein, carbohydrate, fat, and dietary fibre metrics with 0% AI estimation error.
-            </p>
-            <Link to="/nutrition-checker" className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 mt-6 group-hover:translate-x-1 transition-transform">
+            <Link to="/nutrition-checker" className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 mt-5 group-hover:translate-x-1 transition-transform">
               Explore Foods <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           {/* Card 2 */}
-          <div className="p-8 rounded-3xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-600/5 transition-all group">
-            <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600 mb-6 group-hover:scale-110 transition-transform">
-              <Brain className="w-6 h-6" />
+          <div className="p-7 rounded-3xl bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-600/5 transition-all group flex flex-col justify-between">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-5 group-hover:scale-110 transition-transform">
+                <ArrowLeftRight className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">Smart Food Alternatives</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Discover nutritionally comparable substitutes ranked by higher protein, lower calories, or fibre, with side-by-side comparison tables.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">LoRA Meal Intelligence</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Fine-tuned parameter-efficient adapter understands Indian colloquialisms like "katori", "phulka", "chammach ghee", and regional preparation styles.
-            </p>
-            <Link to="/meal-intelligence" className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-600 mt-6 group-hover:translate-x-1 transition-transform">
-              Test Meal Parser <ArrowRight className="w-3.5 h-3.5" />
+            <Link to="/alternatives" className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 mt-5 group-hover:translate-x-1 transition-transform">
+              Find Alternatives <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           {/* Card 3 */}
-          <div className="p-8 rounded-3xl bg-white border border-slate-200 hover:border-cyan-400 hover:shadow-xl hover:shadow-cyan-600/5 transition-all group">
-            <div className="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 mb-6 group-hover:scale-110 transition-transform">
-              <MessageSquare className="w-6 h-6" />
+          <div className="p-7 rounded-3xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-600/5 transition-all group flex flex-col justify-between">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600 mb-5 group-hover:scale-110 transition-transform">
+                <Brain className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">LoRA Meal Intelligence</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Fine-tuned adapter understands Indian colloquialisms like "katori", "phulka", "chammach ghee", and regional preparation styles.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">RAG Nutrition Chat</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Vector search across Indian medical and nutritional guidelines via Qdrant & LangChain. Transparent document citations for every recommendation.
-            </p>
-            <Link to="/chat" className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 mt-6 group-hover:translate-x-1 transition-transform">
+            <Link to="/meal-intelligence" className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-600 mt-5 group-hover:translate-x-1 transition-transform">
+              Test Meal Parser <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* Card 4 */}
+          <div className="p-7 rounded-3xl bg-white border border-slate-200 hover:border-cyan-400 hover:shadow-xl hover:shadow-cyan-600/5 transition-all group flex flex-col justify-between">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 mb-5 group-hover:scale-110 transition-transform">
+                <MessageSquare className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">RAG Nutrition Chat</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Vector search across Indian medical and nutritional guidelines via Qdrant & LangChain. Transparent document citations for every recommendation.
+              </p>
+            </div>
+            <Link to="/chat" className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 mt-5 group-hover:translate-x-1 transition-transform">
               Ask AI Assistant <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

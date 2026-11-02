@@ -15,6 +15,7 @@ from app.api.chat import router as chat_router
 from app.api.experiments import router as experiments_router
 from app.api.meal_intelligence import router as meal_intelligence_router
 from app.api.auth import router as auth_router
+from app.api.food_alternatives import router as alternatives_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -55,6 +56,7 @@ app.add_middleware(
 
 # Include API Routers under /api
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
+app.include_router(alternatives_router, prefix=settings.API_V1_PREFIX)
 app.include_router(health_router, prefix=settings.API_V1_PREFIX)
 app.include_router(foods_router, prefix=settings.API_V1_PREFIX)
 app.include_router(nutrition_router, prefix=settings.API_V1_PREFIX)

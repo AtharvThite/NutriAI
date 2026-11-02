@@ -146,3 +146,14 @@ def get_rag_experiments():
             "embedding_model": settings.EMBEDDING_MODEL
         }
     return data
+
+@router.get("/experiments/alternatives")
+def get_alternatives_experiments():
+    data = load_result_json("food_alternatives_eval.json")
+    if not data:
+        return {
+            "status": "Not evaluated yet",
+            "message": "Run backend/scripts/evaluate_alternatives.py to compute Intent Accuracy, MRR, and latency.",
+            "knowledge_base_documents": 20
+        }
+    return data

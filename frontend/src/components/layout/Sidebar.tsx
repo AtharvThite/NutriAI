@@ -9,6 +9,7 @@ import {
   Database,
   Leaf,
   ChefHat,
+  ArrowLeftRight,
   LogOut,
   LogIn
 } from 'lucide-react';
@@ -56,6 +57,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ systemHealth }) => {
       description: 'RAG & composition assistant'
     },
     {
+      to: '/alternatives',
+      label: 'Smart Alternatives',
+      icon: ArrowLeftRight,
+      description: 'Nutritional substitute finder & comparison'
+    },
+    {
       to: '/experiments',
       label: 'ML Experiments',
       icon: FlaskConical,
@@ -93,10 +100,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ systemHealth }) => {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                  isActive
-                    ? 'bg-emerald-50 text-emerald-700 shadow-xs border border-emerald-200/60 font-semibold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive
+                  ? 'bg-emerald-50 text-emerald-700 shadow-xs border border-emerald-200/60 font-semibold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`
               }
             >

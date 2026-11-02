@@ -18,7 +18,14 @@ import {
   User,
   AuthResponse,
   LoginCredentials,
-  SignupCredentials
+  SignupCredentials,
+  AlternativeFoodSearchItem,
+  RecommendAlternativesRequest,
+  RecommendAlternativesResponse,
+  CompareFoodsResponse,
+  ExplainAlternativeResponse,
+  NaturalLanguageIntentResponse,
+  SavedComparisonItem
 } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
@@ -220,5 +227,61 @@ export const api = {
   async updateProfile(updates: Partial<User>): Promise<User> {
     const res = await apiClient.put<User>('/auth/profile', updates);
     return res.data;
+  },
+
+  // Smart Food Alternatives
+  async searchAlternatives(query: string, limit = 15): Promise<AlternativeFoodSearchItem[]> {
+    const res = await apiClient.get<AlternativeFoodSearchItem[]>('/alternatives/search', {
+      params: { q: query, limit }
+    });
+    return res.data;
+  },
+
+  async recommendAlternatives(payload: RecommendAlternativesRequest): Promise<RecommendAlternativesResponse> {
+    const res = await apiClient.post<RecommendAlternativesResponse>('/alternatives/recommend', payload);
+    return res.data;
+  },
+
+  async compareAlternativeFoods(foodCodes: string[], quantityG = 100): Promise<CompareFoodsResponse> {
+    const res = await apiClient.post<CompareFoodsResponse>('/alternatives/compare', {
+      food_codes: foodCodes,
+      quantity_g: quantityG
+    });
+    return res.data;
+  },
+
+  async explainAlternative(payload: {
+    original_food_code: string;
+    alternative_food_code: string;
+    objective: string;
+    quantity_g: number;
+  }): Promise<ExplainAlternativeResponse> {
+    const res = await apiClient.post<ExplainAlternativeResponse>('/alternatives/explain', payload);
+    return res.data;
+  },
+
+  async parseAlternativeIntent(query: string): Promise<NaturalLanguageIntentResponse> {
+    const res = await apiClient.post<NaturalLanguageIntentResponse>('/alternatives/parse-request', { query });
+    return res.data;
+  },
+
+  async getSavedAlternatives(): Promise<SavedComparisonItem[]> {
+    const res = await apiClient.get<SavedComparisonItem[]>('/alternatives/saved');
+    return res.data;
+  },
+
+  async saveAlternative(payload: {
+    original_food_code: string;
+    alternative_food_code: string;
+    objective: string;
+    quantity_g: number;
+    notes?: string;
+  }): Promise<{ success: boolean; comparison_id: string; message: string }> {
+    const res = await apiClient.post('/alternatives/saved', payload);
+    return res.data;
+  },
+
+  async deleteSavedAlternative(comparisonId: string): Promise<void> {
+    await apiClient.delete(`/alternatives/saved/${comparisonId}`);
   }
 };

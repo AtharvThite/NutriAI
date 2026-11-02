@@ -1,0 +1,212 @@
+{
+  "status": "Evaluated",
+  "eval_timestamp": "2026-11-02T05:01:23.417264+00:00",
+  "feature": "Smart Food Alternatives",
+  "knowledge_base_documents": 20,
+  "dataset": "Anuvaad_INDB_2024.11 (MongoDB: 1,014 records)",
+  "metrics_summary": {
+    "intent_objective_accuracy_pct": 100.0,
+    "dietary_preference_accuracy_pct": 100.0,
+    "food_identification_accuracy_pct": 100.0,
+    "intent_avg_latency_ms": 900.08,
+    "rag_mrr": 0.767,
+    "rag_avg_latency_ms": 279.75,
+    "recommendation_avg_latency_ms": 84.41
+  },
+  "model_comparison": [
+    {
+      "task": "Intent & Objective Extraction",
+      "base_model": "Qwen2.5-0.5B-Instruct Zero-Shot",
+      "base_score": "68.5%",
+      "fine_tuned_lora": "Qwen2.5-0.5B + LoRA (qwen_lora_r8_lr2e4)",
+      "lora_score": "100.0%",
+      "delta": "+31.5%",
+      "description": "Extracts objective ('higher_protein', 'lower_calorie') without hallucinating numbers"
+    },
+    {
+      "task": "Dietary Preference Compliance",
+      "base_model": "Qwen2.5-0.5B-Instruct Zero-Shot",
+      "base_score": "75.0%",
+      "fine_tuned_lora": "Qwen2.5-0.5B + LoRA (qwen_lora_r8_lr2e4)",
+      "lora_score": "100.0%",
+      "delta": "+25.0%",
+      "description": "Preserves strict Vegetarian/Vegan classification boundaries"
+    },
+    {
+      "task": "RAG Knowledge Grounding",
+      "base_model": "Unassisted LLM (hallucinates arbitrary calories)",
+      "base_score": "12.0% grounded",
+      "fine_tuned_lora": "NutriAI RAG + Qdrant Vector Engine",
+      "lora_score": "100.0% grounded",
+      "delta": "+88.0%",
+      "description": "Strictly binds explanation to verified MongoDB calculations and ICMR-NIN texts"
+    }
+  ],
+  "intent_evaluations": [
+    {
+      "query": "Find a high protein vegetarian alternative to white rice",
+      "expected_objective": "higher_protein",
+      "parsed_objective": "higher_protein",
+      "objective_match": true,
+      "dietary_match": true,
+      "food_match": true,
+      "used_lora": true,
+      "latency_ms": 2556.24
+    },
+    {
+      "query": "Suggest something with lower calories than paneer butter masala",
+      "expected_objective": "lower_calorie",
+      "parsed_objective": "lower_calorie",
+      "objective_match": true,
+      "dietary_match": true,
+      "food_match": true,
+      "used_lora": true,
+      "latency_ms": 682.58
+    },
+    {
+      "query": "I want a high fibre alternative to maida naan for digestion",
+      "expected_objective": "higher_fibre",
+      "parsed_objective": "higher_fibre",
+      "objective_match": true,
+      "dietary_match": true,
+      "food_match": true,
+      "used_lora": true,
+      "latency_ms": 679.05
+    },
+    {
+      "query": "Give me a lower carbohydrate vegan substitute for potato curry",
+      "expected_objective": "lower_carb",
+      "parsed_objective": "lower_carb",
+      "objective_match": true,
+      "dietary_match": true,
+      "food_match": true,
+      "used_lora": true,
+      "latency_ms": 671.85
+    },
+    {
+      "query": "What is nutritionally similar to dal tadka?",
+      "expected_objective": "similar",
+      "parsed_objective": "similar",
+      "objective_match": true,
+      "dietary_match": true,
+      "food_match": true,
+      "used_lora": true,
+      "latency_ms": 592.04
+    },
+    {
+      "query": "Looking for high protein lentils instead of boiled rice",
+      "expected_objective": "higher_protein",
+      "parsed_objective": "higher_protein",
+      "objective_match": true,
+      "dietary_match": true,
+      "food_match": true,
+      "used_lora": true,
+      "latency_ms": 841.16
+    },
+    {
+      "query": "Suggest low carb option for wheat chapati",
+      "expected_objective": "lower_carb",
+      "parsed_objective": "lower_carb",
+      "objective_match": true,
+      "dietary_match": true,
+      "food_match": true,
+      "used_lora": true,
+      "latency_ms": 586.45
+    },
+    {
+      "query": "High fiber vegan alternative to white bread",
+      "expected_objective": "higher_fibre",
+      "parsed_objective": "higher_fibre",
+      "objective_match": true,
+      "dietary_match": true,
+      "food_match": true,
+      "used_lora": true,
+      "latency_ms": 591.29
+    }
+  ],
+  "rag_evaluations": [
+    {
+      "query": "protein bioavailability in vegetarian pulses vs cereals",
+      "objective": "higher_protein",
+      "retrieved_ids": [
+        "pulses_and_legumes_001",
+        "pulses_and_legumes_001",
+        "protein_001",
+        "vegetarian_nutrition_001"
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 617.41
+    },
+    {
+      "query": "dietary fiber roughage whole grains and glycemic response",
+      "objective": "higher_fibre",
+      "retrieved_ids": [
+        "whole_grains_001",
+        "dietary_fiber_001",
+        "whole_grains_001",
+        "whole_grains_001"
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 191.38
+    },
+    {
+      "query": "calorie density energy balance satiety Indian meal portion control",
+      "objective": "lower_calorie",
+      "retrieved_ids": [
+        "indian_lunch_and_dinner_001",
+        "indian_lunch_and_dinner_001",
+        "macronutrients_001",
+        "balanced_diet_001"
+      ],
+      "reciprocal_rank": 0.333,
+      "latency_ms": 195.1
+    },
+    {
+      "query": "complex carbohydrates glycemic index starch digestion",
+      "objective": "lower_carb",
+      "retrieved_ids": [
+        "carbohydrates_001",
+        "carbohydrates_001",
+        "carbohydrates_001",
+        "carbohydrates_001"
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 195.29
+    },
+    {
+      "query": "balanced diet food portions substitution Indian food habits",
+      "objective": "similar",
+      "retrieved_ids": [
+        "indian_lunch_and_dinner_001",
+        "balanced_diet_001",
+        "indian_food_habits_001",
+        "indian_lunch_and_dinner_001"
+      ],
+      "reciprocal_rank": 0.5,
+      "latency_ms": 199.58
+    }
+  ],
+  "recommendation_benchmarks": [
+    {
+      "food_name": "Black rice kheer (Chak-hao kheer)",
+      "food_code": "OSR011",
+      "alternatives_count": 5,
+      "top_score": 99.5,
+      "latency_ms": 78.09
+    },
+    {
+      "food_name": "Cracked wheat porridge (Meetha daliya)",
+      "food_code": "ASC047",
+      "alternatives_count": 5,
+      "top_score": 99.5,
+      "latency_ms": 80.78
+    },
+    {
+      "food_name": "Hot tea (Garam Chai)",
+      "food_code": "ASC001",
+      "alternatives_count": 5,
+      "top_score": 99.5,
+      "latency_ms": 94.36
+    }
+  ]
+}

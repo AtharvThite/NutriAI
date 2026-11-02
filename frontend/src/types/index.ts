@@ -318,3 +318,138 @@ export interface SignupCredentials {
   dietary_preference?: string;
   daily_calorie_target?: number;
 }
+
+// Smart Food Alternatives Types
+export interface AlternativeFoodSearchItem {
+  food_code: string;
+  food_name: string;
+  category: string;
+  dietary_type: string;
+  nutrition_basis: string;
+  energy_kcal?: number | null;
+  protein_g?: number | null;
+  carb_g?: number | null;
+  fat_g?: number | null;
+  fibre_g?: number | null;
+  servings_unit?: string | null;
+}
+
+export interface NutrientComparisonItem {
+  nutrient_key: string;
+  nutrient_name: string;
+  unit: string;
+  original_val?: number | null;
+  alternative_val?: number | null;
+  diff?: number | null;
+  diff_pct?: number | null;
+  is_higher?: boolean | null;
+  is_compatible: boolean;
+}
+
+export interface OriginalFoodSummary {
+  food_code: string;
+  food_name: string;
+  category: string;
+  dietary_type: string;
+  nutrition_basis: string;
+  quantity_g: number;
+  nutrients: Record<string, number | null>;
+  nutrients_per_100g: Record<string, number | null>;
+  servings_unit?: string | null;
+}
+
+export interface AlternativeCandidate {
+  food_code: string;
+  food_name: string;
+  category: string;
+  dietary_type: string;
+  nutrition_basis: string;
+  quantity_g: number;
+  nutrients: Record<string, number | null>;
+  nutrients_per_100g: Record<string, number | null>;
+  score: number;
+  rank: number;
+  match_reason: string;
+  key_differences: string[];
+  comparisons: Record<string, NutrientComparisonItem>;
+}
+
+export interface RecommendAlternativesRequest {
+  food_code: string;
+  quantity_g: number;
+  objective: string;
+  dietary_preference?: string;
+  category_filter?: string | null;
+  limit?: number;
+}
+
+export interface RecommendAlternativesResponse {
+  original_food: OriginalFoodSummary;
+  objective: string;
+  quantity_g: number;
+  dietary_preference: string;
+  alternatives: AlternativeCandidate[];
+  total_candidates_analyzed: number;
+  explanation_available: boolean;
+}
+
+export interface CompareFoodsResponse {
+  foods: OriginalFoodSummary[];
+  comparison_matrix: Array<{
+    nutrient_key: string;
+    nutrient_name: string;
+    unit: string;
+    values: Record<string, number | null>;
+  }>;
+  macro_ratios: Record<string, {
+    carb_pct: number;
+    protein_pct: number;
+    fat_pct: number;
+  }>;
+  quantity_g: number;
+}
+
+export interface ExplainAlternativeResponse {
+  original_food_name: string;
+  alternative_food_name: string;
+  objective: string;
+  explanation: string;
+  sources: Array<{
+    document_id: string;
+    title: string;
+    snippet: string;
+  }>;
+  is_fallback: boolean;
+  comparison_highlights: string[];
+}
+
+export interface NaturalLanguageIntentResponse {
+  original_food_query?: string | null;
+  matched_food_code?: string | null;
+  matched_food_name?: string | null;
+  objective: string;
+  dietary_preference: string;
+  comparison_criteria: string[];
+  requires_clarification: boolean;
+  clarification_message?: string | null;
+  used_lora: boolean;
+}
+
+export interface SavedComparisonItem {
+  comparison_id: string;
+  user_id?: string | null;
+  original_food_code: string;
+  original_food_name: string;
+  original_category: string;
+  alternative_food_code: string;
+  alternative_food_name: string;
+  alternative_category: string;
+  objective: string;
+  quantity_g: number;
+  notes?: string | null;
+  created_at: string;
+  original_calories?: number | null;
+  alternative_calories?: number | null;
+  original_protein?: number | null;
+  alternative_protein?: number | null;
+}

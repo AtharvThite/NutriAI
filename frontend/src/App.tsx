@@ -9,6 +9,7 @@ import { NutritionChecker } from './pages/NutritionChecker';
 import { AIMealIntelligence } from './pages/AIMealIntelligence';
 import { NutritionChat } from './pages/NutritionChat';
 import { ExperimentDashboard } from './pages/ExperimentDashboard';
+import { SmartFoodAlternatives } from './pages/SmartFoodAlternatives';
 import { AuthProvider } from './context/AuthContext';
 import { api } from './services/api';
 import { SystemHealth } from './types';
@@ -30,6 +31,11 @@ const PageLayout: React.FC<{ children: React.ReactNode; health: SystemHealth | n
         return {
           title: 'Nutrition Checker',
           subtitle: 'Deterministic Indian food macro & micronutrient calculation'
+        };
+      case '/alternatives':
+        return {
+          title: 'Smart Food Alternatives',
+          subtitle: 'Nutritional similarity ranking, side-by-side comparison & clinical RAG explanations'
         };
       case '/meal-intelligence':
         return {
@@ -107,6 +113,14 @@ export const App: React.FC = () => {
             element={
               <PageLayout health={health}>
                 <NutritionChecker />
+              </PageLayout>
+            }
+          />
+          <Route
+            path="/alternatives"
+            element={
+              <PageLayout health={health}>
+                <SmartFoodAlternatives />
               </PageLayout>
             }
           />

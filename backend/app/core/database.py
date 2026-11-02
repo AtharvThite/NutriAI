@@ -36,6 +36,10 @@ class MongoDBManager:
                 foods_col.create_index("food_code", unique=True)
                 foods_col.create_index([("food_name", "text")])
                 foods_col.create_index("food_name")
+                foods_col.create_index("nutrients.energy_kcal")
+                foods_col.create_index("nutrients.protein_g")
+                foods_col.create_index("nutrients.carb_g")
+                foods_col.create_index("nutrients.fibre_g")
 
                 meals_col = self.db["meals"]
                 meals_col.create_index("meal_id", unique=True)
@@ -44,6 +48,10 @@ class MongoDBManager:
                 users_col = self.db["users"]
                 users_col.create_index("email", unique=True)
                 users_col.create_index("user_id", unique=True)
+
+                saved_col = self.db["saved_alternatives"]
+                saved_col.create_index("comparison_id", unique=True)
+                saved_col.create_index("created_at")
             except Exception as e:
                 logger.error("Error creating MongoDB indexes: %s", e)
 
@@ -89,4 +97,11 @@ def get_users_collection() -> Optional[Collection]:
         db_manager.connect()
     if db_manager.db is not None:
         return db_manager.db["users"]
+    return None
+
+def get_saved_alternatives_collection() -> Optional[Collection]:
+    if db_manager.db is None:
+        db_manager.connect()
+    if db_manager.db is not None:
+        return db_manager.db["saved_alternatives"]
     return None
